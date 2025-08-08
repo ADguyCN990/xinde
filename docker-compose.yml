@@ -1,0 +1,19 @@
+version: '3.8'
+
+services:
+  db:
+    image: mysql:8.0
+    container_name: xinde-mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword # You can change this root password
+      MYSQL_DATABASE: phpxxxd
+      MYSQL_USER: phpsql
+      MYSQL_PASSWORD: bserp
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+
+volumes:
+  mysql-data:
