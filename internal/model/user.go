@@ -1,26 +1,36 @@
 package model
 
-// TUser undefined
-type TUser struct {
-	Uid `Int Not Null AutoIncrement",  "`username string `json:"uid` int NOT NULL AUTO_INCREMENT",  "`username" gorm:"uid` int NOT NULL AUTO_INCREMENT",  "`username"`
-	Password string `json:"password" gorm:"password"`
-	Usermobile string `json:"usermobile" gorm:"usermobile"`
-	IsAdmin int8 `json:"is_admin" gorm:"is_admin"` // 是否为管理员
-	Remarks string `json:"remarks" gorm:"remarks"` // 备注
-	Lasttime int64 `json:"lasttime" gorm:"lasttime"` // 上次访问时间戳
-	SearchDevice string `json:"search_device" gorm:"search_device"` // 上次访问的设备
-	Comname string `json:"comname" gorm:"comname"`
-	Comarea string `json:"comarea" gorm:"comarea"`
-	Name string `json:"name" gorm:"name"` // 用户真实姓名
-	User-email string `json:"user-email" gorm:"user-email"`
-	CreatedAt int64 `json:"created_at" gorm:"created_at"` // 注册时间戳
-	IsUser int64 `json:"is_user" gorm:"is_user"` // 是否审核通过，1为通过
-	Why string `json:"why" gorm:"why"` // 审核拒绝的原因
-	HandledAt int64 `json:"handled_at" gorm:"handled_at"` // 注册申请通过时间戳
-	CompanyId int64 `json:"company_id" gorm:"company_id"` // 用户对应的公司ID
+// User represents the t_user table in the database.
+type User struct {
+	// 核心字段
+	UID        uint   `gorm:"primaryKey;column:uid;autoIncrement"`
+	Username   string `gorm:"column:username;not null;comment:用户账号"`
+	Password   string `gorm:"column:password;comment:用户密码"` // 密码通常是 string 类型，即使数据库中是 NULL
+	UserMobile string `gorm:"column:usermobile;comment:用户电话号码"`
+	IsAdmin    int8   `gorm:"column:is_admin;not null;default:0;comment:是否为管理员"` // tinyint -> int8
+	Remarks    string `gorm:"column:remarks;comment:备注"`
+
+	// 上次访问信息
+	LastTime     int64  `gorm:"column:lasttime;comment:上次访问时间戳"` // 使用指针 *int64 来处理可为 NULL 的情况
+	SearchDevice string `gorm:"column:search_device;comment:上次访问的设备"`
+
+	// 公司信息
+	ComName   string `gorm:"column:comname;not null;comment:公司名称"`
+	ComArea   string `gorm:"column:comarea;comment:公司地址"`
+	CompanyID uint   `gorm:"column:company_id;comment:用户对应的公司ID"` // 使用指针 *uint 来处理可为 NULL 的情况
+
+	// 用户个人信息
+	Name      string `gorm:"column:name;not null;comment:用户真实姓名"`
+	UserEmail string `gorm:"column:user-email;comment:用户邮箱"` // 注意字段名中的连字符
+
+	// 注册与审核信息
+	CreatedAt int64  `gorm:"column:created_at;not null;comment:注册时间戳"`
+	IsUser    int    `gorm:"column:is_user;not null;comment:是否审核通过，1为通过"`
+	Why       string `gorm:"column:why;comment:审核拒绝的原因"`
+	HandledAt int64  `gorm:"column:handled_at;comment:注册申请通过时间戳"`
 }
 
-// TableName 表名称
-func (*TUser) TableName() string {
+// TableName specifies the table name for the User model.
+func (User) TableName() string {
 	return "t_user"
 }
