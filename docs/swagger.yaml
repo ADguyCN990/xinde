@@ -1,4 +1,38 @@
 basePath: /api/v1
+definitions:
+  xinde_internal_model_dto_account.RegisterReq:
+    properties:
+      company_address:
+        type: string
+      company_name:
+        type: string
+      confirmed_password:
+        type: string
+      email:
+        type: string
+      name:
+        type: string
+      password:
+        type: string
+      phone:
+        type: string
+      username:
+        type: string
+    required:
+    - company_name
+    - confirmed_password
+    - name
+    - password
+    - phone
+    - username
+    type: object
+  xinde_internal_model_dto_account.RegisterResp:
+    properties:
+      msg:
+        type: string
+      status:
+        type: boolean
+    type: object
 host: localhost:8080
 info:
   contact:
@@ -13,6 +47,40 @@ info:
   title: xinde API
   version: "1.0"
 paths:
+  /api/v1/account/register:
+    post:
+      consumes:
+      - application/json
+      description: 用户名，真实姓名，公司名称，公司地址（可选），密码，手机号，邮箱（可选）
+      parameters:
+      - description: Register Request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/xinde_internal_model_dto_account.RegisterReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: User registered successfully
+          schema:
+            $ref: '#/definitions/xinde_internal_model_dto_account.RegisterResp'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/xinde_internal_model_dto_account.RegisterResp'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/xinde_internal_model_dto_account.RegisterResp'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/xinde_internal_model_dto_account.RegisterResp'
+      summary: 注册一个新用户
+      tags:
+      - Account
   /ping:
     get:
       consumes:

@@ -1,18 +1,25 @@
 package router
 
 import (
-	"xinde/internal/handler"
-
+	"fmt"
 	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
+	"xinde/internal/handler"
+	"xinde/internal/handler/account"
 )
 
-func InitRouter() *gin.Engine {
+func InitRouter() (*gin.Engine, error) {
 	router := gin.Default()
 
 	// Swagger
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+
+	// 创建controller实例
+	accountCtrl, err := account.NewAccountController()
+	if err != nil {
+		return nil, fmt.Errorf("初始化AccountController失败: %w", err)
+	}
 
 	// Ping test is now inside the /api/v1/health group
 
@@ -25,9 +32,9 @@ func InitRouter() *gin.Engine {
 			health.GET("/ping", handler.Ping)
 		}
 
-		enroll := apiV1.Group("/enroll")
+		accountGroup := apiV1.Group("/account")
 		{
-			enroll.POST("/", handler.Enroll)
+			accountGroup.POST("/register", accountCtrl.Register)
 		}
 		// You can add more groups here, for example:
 		// userGroup := apiV1.Group("/users")
@@ -36,5 +43,5 @@ func InitRouter() *gin.Engine {
 		// }
 	}
 
-	return router
+	return router, nil
 }
