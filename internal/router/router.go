@@ -20,9 +20,7 @@ func InitRouter() (*gin.Engine, error) {
 	if err != nil {
 		return nil, fmt.Errorf("初始化AccountController失败: %w", err)
 	}
-
-	// Ping test is now inside the /api/v1/health group
-
+	
 	// API v1 routes
 	apiV1 := router.Group("/api/v1")
 	{

@@ -4,7 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"gorm.io/gorm"
-	"xinde/internal/model"
+	"xinde/internal/model/account"
 	"xinde/internal/store"
 )
 
@@ -33,7 +33,7 @@ func (registerDao *Dao) IsExistUser(name string) (bool, error) {
 		return false, fmt.Errorf("用户名不能为空")
 	}
 
-	var user model.User
+	var user account.User
 	err := registerDao.db.Where("username = ?", name).First(&user).Error
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
@@ -50,7 +50,7 @@ func (registerDao *Dao) CreateUser(username, email, name, companyName, companyAd
 		return 0, fmt.Errorf("Dao 或数据库连接为空")
 	}
 
-	user := &model.User{
+	user := &account.User{
 		Username:    username,
 		Name:        name,
 		UserEmail:   email,

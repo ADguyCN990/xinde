@@ -1,6 +1,6 @@
 basePath: /api/v1
 definitions:
-  xinde_internal_model_dto_account.RegisterReq:
+  xinde_internal_dto_account.RegisterReq:
     properties:
       company_address:
         type: string
@@ -26,11 +26,14 @@ definitions:
     - phone
     - username
     type: object
-  xinde_internal_model_dto_account.RegisterResp:
+  xinde_internal_dto_account.RegisterResp:
     properties:
-      msg:
+      code:
+        type: integer
+      data: {}
+      message:
         type: string
-      status:
+      success:
         type: boolean
     type: object
 host: localhost:8080
@@ -58,26 +61,26 @@ paths:
         name: request
         required: true
         schema:
-          $ref: '#/definitions/xinde_internal_model_dto_account.RegisterReq'
+          $ref: '#/definitions/xinde_internal_dto_account.RegisterReq'
       produces:
       - application/json
       responses:
         "200":
           description: User registered successfully
           schema:
-            $ref: '#/definitions/xinde_internal_model_dto_account.RegisterResp'
+            $ref: '#/definitions/xinde_internal_dto_account.RegisterResp'
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/xinde_internal_model_dto_account.RegisterResp'
+            $ref: '#/definitions/xinde_internal_dto_account.RegisterResp'
         "403":
           description: Forbidden
           schema:
-            $ref: '#/definitions/xinde_internal_model_dto_account.RegisterResp'
+            $ref: '#/definitions/xinde_internal_dto_account.RegisterResp'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/xinde_internal_model_dto_account.RegisterResp'
+            $ref: '#/definitions/xinde_internal_dto_account.RegisterResp'
       summary: 注册一个新用户
       tags:
       - Account

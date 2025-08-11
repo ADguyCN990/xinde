@@ -36,6 +36,7 @@ func main() {
 		logger.Error("Error initializing config", zap.Error(err))
 		return // Exit if config fails to load
 	}
+	logger.Info("配置文件加载成功")
 
 	// Initialize database
 	if err := store.InitDB(); err != nil {
@@ -48,6 +49,7 @@ func main() {
 	if err != nil {
 		logger.Panic(err.Error())
 	}
+	logger.Info("路由组创建成功")
 
 	// Start the server
 	port := viper.GetInt("server.port")

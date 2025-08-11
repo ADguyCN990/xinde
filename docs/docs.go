@@ -44,7 +44,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/xinde_internal_model_dto_account.RegisterReq"
+                            "$ref": "#/definitions/xinde_internal_dto_account.RegisterReq"
                         }
                     }
                 ],
@@ -52,25 +52,25 @@ const docTemplate = `{
                     "200": {
                         "description": "User registered successfully",
                         "schema": {
-                            "$ref": "#/definitions/xinde_internal_model_dto_account.RegisterResp"
+                            "$ref": "#/definitions/xinde_internal_dto_account.RegisterResp"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/xinde_internal_model_dto_account.RegisterResp"
+                            "$ref": "#/definitions/xinde_internal_dto_account.RegisterResp"
                         }
                     },
                     "403": {
                         "description": "Forbidden",
                         "schema": {
-                            "$ref": "#/definitions/xinde_internal_model_dto_account.RegisterResp"
+                            "$ref": "#/definitions/xinde_internal_dto_account.RegisterResp"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/xinde_internal_model_dto_account.RegisterResp"
+                            "$ref": "#/definitions/xinde_internal_dto_account.RegisterResp"
                         }
                     }
                 }
@@ -102,7 +102,7 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "xinde_internal_model_dto_account.RegisterReq": {
+        "xinde_internal_dto_account.RegisterReq": {
             "type": "object",
             "required": [
                 "company_name",
@@ -139,13 +139,17 @@ const docTemplate = `{
                 }
             }
         },
-        "xinde_internal_model_dto_account.RegisterResp": {
+        "xinde_internal_dto_account.RegisterResp": {
             "type": "object",
             "properties": {
-                "msg": {
+                "code": {
+                    "type": "integer"
+                },
+                "data": {},
+                "message": {
                     "type": "string"
                 },
-                "status": {
+                "success": {
                     "type": "boolean"
                 }
             }

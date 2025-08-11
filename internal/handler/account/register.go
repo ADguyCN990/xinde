@@ -3,7 +3,7 @@ package account
 import (
 	"github.com/gin-gonic/gin"
 	"net/http"
-	dto "xinde/internal/model/dto/account"
+	dto "xinde/internal/dto/account"
 	service "xinde/internal/service/account"
 	"xinde/pkg/response"
 )

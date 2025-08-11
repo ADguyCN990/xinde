@@ -4,7 +4,7 @@ import (
 	"errors"
 	"fmt"
 	registerDao "xinde/internal/dao/account"
-	dto "xinde/internal/model/dto/account"
+	dto "xinde/internal/dto/account"
 	"xinde/pkg/util"
 )
 

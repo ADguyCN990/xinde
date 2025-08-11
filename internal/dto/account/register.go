@@ -8,10 +8,12 @@ type RegisterReq struct {
 	Phone             string `form:"phone" json:"phone" binding:"required"`
 	CompanyName       string `form:"company_name" json:"company_name" binding:"required"`
 	CompanyAddress    string `form:"company_address" json:"company_address"`
-	Email             string `form:"email" json:"email"`
+	Email             string `form:"email" json:"email" binding:"email"`
 }
 
 type RegisterResp struct {
-	Msg    string `json:"msg"`
-	Status bool   `json:"status"`
+	Code    int         `json:"code"`
+	Message string      `json:"message"`
+	Success bool        `json:"success"`
+	Data    interface{} `json:"data"`
 }

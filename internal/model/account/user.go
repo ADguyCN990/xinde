@@ -1,4 +1,4 @@
-package model
+package account
 
 // User represents the t_user table in the database.
 type User struct {
