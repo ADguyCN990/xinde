@@ -8,25 +8,25 @@ import (
 	"xinde/internal/store"
 )
 
-type RegisterDao struct {
+type Dao struct {
 	db *gorm.DB
 }
 
-func NewRegisterDao() (*RegisterDao, error) {
+func NewRegisterDao() (*Dao, error) {
 	db := store.GetDB()
 	if db == nil {
 		return nil, errors.New("数据库连接未初始化，请先调用 store.InitDB()")
 	}
 
-	return &RegisterDao{
+	return &Dao{
 		db: db,
 	}, nil
 }
 
 // IsExistUser 根据username判断user是否已经存在
-func (registerDao *RegisterDao) IsExistUser(name string) (bool, error) {
+func (registerDao *Dao) IsExistUser(name string) (bool, error) {
 	if registerDao == nil || registerDao.db == nil {
-		return false, fmt.Errorf("RegisterDao 或数据库连接为空")
+		return false, fmt.Errorf("Dao 或数据库连接为空")
 	}
 
 	if name == "" {
@@ -45,9 +45,9 @@ func (registerDao *RegisterDao) IsExistUser(name string) (bool, error) {
 }
 
 // CreateUser 在`t_user`表中创建用户
-func (registerDao *RegisterDao) CreateUser(username, email, name, companyName, companyAddress, password, phone string) (uint, error) {
+func (registerDao *Dao) CreateUser(username, email, name, companyName, companyAddress, password, phone string) (uint, error) {
 	if registerDao == nil || registerDao.db == nil {
-		return 0, fmt.Errorf("RegisterDao 或数据库连接为空")
+		return 0, fmt.Errorf("Dao 或数据库连接为空")
 	}
 
 	user := &model.User{

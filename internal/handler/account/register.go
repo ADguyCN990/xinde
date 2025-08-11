@@ -5,21 +5,20 @@ import (
 	"net/http"
 	dto "xinde/internal/model/dto/account"
 	service "xinde/internal/service/account"
-	"xinde/pkg/logger"
 	"xinde/pkg/response"
 )
 
-type AccountController struct {
-	accountService *service.AccountService
+type Controller struct {
+	accountService *service.Service
 }
 
-func NewAccountController() (*AccountController, error) {
+func NewAccountController() (*Controller, error) {
 	accountService, err := service.NewAccountService()
 	if err != nil {
 		return nil, err
 	}
 
-	return &AccountController{
+	return &Controller{
 		accountService: accountService,
 	}, nil
 }
@@ -36,32 +35,24 @@ func NewAccountController() (*AccountController, error) {
 // @Failure 403 {object} dto.RegisterResp "Forbidden"
 // @Failure 500 {object} dto.RegisterResp "Internal Server Error"
 // @Router /api/v1/account/register [post]
-func (ctrl *AccountController) Register(c *gin.Context) {
+func (ctrl *Controller) Register(c *gin.Context) {
 	var req dto.RegisterReq
 	var err error
 	if err := c.ShouldBind(&req); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"status": false,
-			"msg":    err.Error(),
-		})
-		logger.Error(err.Error())
+		response.Error(c, http.StatusBadRequest, response.CodeInvalidParams, err.Error())
 		return
 	}
 
 	// 重复输入密码需一致
 	if req.Password != req.ConfirmedPassword {
-		c.JSON(http.StatusForbidden, gin.H{
-			"status": false,
-			"msg":    "两次输入的密码不一致，请重新输入",
-		})
-		logger.Error("两次输入的密码不一致，请重新输入")
+		response.Error(c, http.StatusBadRequest, response.CodeInvalidParams, "两次输入的密码不一致，请重新输入")
 		return
 	}
 
 	// 校验完参数后，交由service层处理
 	_, err = ctrl.accountService.Register(&req)
 	if err != nil {
-		response.Error(c, http.StatusInternalServerError, response.CodeInternalError, response.MsgInternalError)
+		response.Error(c, http.StatusInternalServerError, response.CodeInternalError, err.Error())
 		return
 	}
 	response.Success(c, nil)

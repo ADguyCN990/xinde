@@ -8,22 +8,22 @@ import (
 	"xinde/pkg/util"
 )
 
-type AccountService struct {
-	dao *registerDao.RegisterDao
+type Service struct {
+	dao *registerDao.Dao
 }
 
-func NewAccountService() (*AccountService, error) {
+func NewAccountService() (*Service, error) {
 	dao, err := registerDao.NewRegisterDao()
 	if err != nil {
 		return nil, fmt.Errorf("创建 DAO 实例失败: %w", err)
 	}
 
-	return &AccountService{
+	return &Service{
 		dao: dao,
 	}, nil
 }
 
-func (s *AccountService) Register(req *dto.RegisterReq) (uint, error) {
+func (s *Service) Register(req *dto.RegisterReq) (uint, error) {
 	// 检查用户是否存在
 	exists, err := s.dao.IsExistUser(req.Username)
 	if err != nil {

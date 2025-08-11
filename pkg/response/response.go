@@ -65,7 +65,7 @@ func Error(c *gin.Context, httpCode int, businessCode int, message string) {
 	})
 }
 
-// 便捷的错误响应方法
+// BadRequest 便捷的错误响应方法
 func BadRequest(c *gin.Context, message string) {
 	if message == "" {
 		message = MsgInvalidParams
@@ -110,4 +110,59 @@ func ServiceUnavailable(c *gin.Context, message string) {
 		message = MsgServiceUnavailable
 	}
 	Error(c, http.StatusServiceUnavailable, CodeServiceUnavailable, message)
+}
+
+// PageData 分页数据结构
+type PageData struct {
+	List     interface{} `json:"list"`      // 数据列表
+	Total    int64       `json:"total"`     // 总数
+	Page     int         `json:"page"`      // 当前页码
+	PageSize int         `json:"page_size"` // 每页大小
+	Pages    int         `json:"pages"`     // 总页数
+}
+
+// SuccessWithPagination 分页成功响应
+func SuccessWithPagination(c *gin.Context, list interface{}, total int64, page int, pageSize int) {
+	pages := int((total + int64(pageSize) - 1) / int64(pageSize)) // 计算总页数
+	if pages < 1 {
+		pages = 1
+	}
+
+	pageData := PageData{
+		List:     list,
+		Total:    total,
+		Page:     page,
+		PageSize: pageSize,
+		Pages:    pages,
+	}
+
+	c.JSON(http.StatusOK, Response{
+		Code:    CodeSuccess,
+		Message: MsgSuccess,
+		Data:    pageData,
+		Success: true,
+	})
+}
+
+// SuccessWithPaginationAndMessage 分页成功响应（自定义消息）
+func SuccessWithPaginationAndMessage(c *gin.Context, message string, list interface{}, total int64, page int, pageSize int) {
+	pages := int((total + int64(pageSize) - 1) / int64(pageSize))
+	if pages < 1 {
+		pages = 1
+	}
+
+	pageData := PageData{
+		List:     list,
+		Total:    total,
+		Page:     page,
+		PageSize: pageSize,
+		Pages:    pages,
+	}
+
+	c.JSON(http.StatusOK, Response{
+		Code:    CodeSuccess,
+		Message: message,
+		Data:    pageData,
+		Success: true,
+	})
 }
