@@ -6,6 +6,7 @@ import (
 	dto "xinde/internal/model/dto/account"
 	service "xinde/internal/service/account"
 	"xinde/pkg/logger"
+	"xinde/pkg/response"
 )
 
 type AccountController struct {
@@ -60,13 +61,8 @@ func (ctrl *AccountController) Register(c *gin.Context) {
 	// 校验完参数后，交由service层处理
 	_, err = ctrl.accountService.Register(&req)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"status": false,
-			"msg":    "server报错" + err.Error(),
-		})
-		logger.Error(err.Error())
+		response.Error(c, http.StatusInternalServerError, response.CodeInternalError, response.MsgInternalError)
 		return
 	}
-
-	c.JSON(http.StatusOK, gin.H{"message": "User registered successfully"})
+	response.Success(c, nil)
 }
