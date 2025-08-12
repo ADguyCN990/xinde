@@ -6,6 +6,7 @@ import (
 	"gorm.io/gorm"
 	"xinde/internal/model/account"
 	"xinde/internal/store"
+	"xinde/pkg/util"
 )
 
 type Dao struct {
@@ -53,9 +54,9 @@ func (registerDao *Dao) CreateUser(username, email, name, companyName, companyAd
 	user := &account.User{
 		Username:    username,
 		Name:        name,
-		UserEmail:   email,
+		UserEmail:   util.StringToPointer(email),
 		CompanyName: companyName,
-		CompanyArea: companyAddress,
+		CompanyArea: util.StringToPointer(companyAddress),
 		Password:    password,
 		Phone:       phone,
 	}

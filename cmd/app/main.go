@@ -53,9 +53,11 @@ func main() {
 
 	// Start the server
 	port := viper.GetInt("server.port")
-	logger.Info(fmt.Sprintf("Starting server on port %d", port))
+
+	logger.Info(fmt.Sprintf("服务运行于端口: %d", port))
 
 	if err := router.Run(fmt.Sprintf(":%d", port)); err != nil {
 		logger.Error("Failed to start server", zap.Error(err))
 	}
+
 }
