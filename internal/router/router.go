@@ -20,7 +20,7 @@ func InitRouter() (*gin.Engine, error) {
 	if err != nil {
 		return nil, fmt.Errorf("初始化AccountController失败: %w", err)
 	}
-	
+
 	// API v1 routes
 	apiV1 := router.Group("/api/v1")
 	{
@@ -33,6 +33,7 @@ func InitRouter() (*gin.Engine, error) {
 		accountGroup := apiV1.Group("/account")
 		{
 			accountGroup.POST("/register", accountCtrl.Register)
+			accountGroup.POST("/login", accountCtrl.Login)
 		}
 		// You can add more groups here, for example:
 		// userGroup := apiV1.Group("/users")

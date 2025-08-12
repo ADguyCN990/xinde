@@ -51,6 +51,20 @@ func (d *Dao) IsExistUser(tx *gorm.DB, name string) (bool, error) {
 	return true, nil
 }
 
+// FindUserByUsername 根据username查找用户
+func (d *Dao) FindUserByUsername(tx *gorm.DB, username string) (*account.User, error) {
+	var user account.User
+	err := tx.Where("username = ?", username).First(&user).Error
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, fmt.Errorf(stderr.ErrorUserUnauthorized)
+		} else {
+			return nil, fmt.Errorf("FindUserByUsername查询用户失败: %w", err)
+		}
+	}
+	return &user, nil
+}
+
 // CreateUser 在`t_user`表中创建用户
 func (d *Dao) CreateUser(tx *gorm.DB, username, email, name, companyName, companyAddress, password, phone string, companyID uint) (uint, error) {
 	if d == nil || d.db == nil || tx == nil {

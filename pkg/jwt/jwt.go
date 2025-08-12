@@ -21,7 +21,6 @@ type CustomClaims struct {
 	UID      uint   `json:"uid"`
 	Username string `json:"username"`
 	IsAdmin  bool   `json:"is_admin"`
-	IsUser   int    `json:"is_user"` // 0未审批，1通过，2拒绝
 	jwt.RegisteredClaims
 }
 
@@ -36,13 +35,12 @@ func NewJWTService() *JWTService {
 }
 
 // GenerateToken creates a new JWT token for a user.
-func (s *JWTService) GenerateToken(uid uint, username string, isAdmin bool, isUser int) (string, error) {
+func (s *JWTService) GenerateToken(uid uint, username string, isAdmin bool) (string, error) {
 	// 创建 claims
 	claims := CustomClaims{
 		UID:      uid,
 		Username: username,
 		IsAdmin:  isAdmin,
-		IsUser:   isUser,
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(time.Now().Add(s.tokenDuration)),
 			IssuedAt:  jwt.NewNumericDate(time.Now()),

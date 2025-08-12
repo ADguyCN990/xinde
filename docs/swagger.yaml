@@ -1,22 +1,74 @@
 basePath: /api/v1
 definitions:
+  xinde_internal_dto_account.LoginData:
+    properties:
+      access_token:
+        example: jwt_token
+        type: string
+      email:
+        example: 1921771473@qq.com
+        type: string
+      name:
+        example: 金晖
+        type: string
+      phone:
+        example: "13065859690"
+        type: string
+      username:
+        example: 金晖
+        type: string
+    type: object
+  xinde_internal_dto_account.LoginReq:
+    properties:
+      password:
+        example: "923845797582"
+        type: string
+      username:
+        example: 金晖
+        type: string
+    required:
+    - password
+    - username
+    type: object
+  xinde_internal_dto_account.LoginResp:
+    properties:
+      code:
+        example: 200
+        type: integer
+      data:
+        $ref: '#/definitions/xinde_internal_dto_account.LoginData'
+      message:
+        example: 操作成功
+        type: string
+      success:
+        example: true
+        type: boolean
+    type: object
   xinde_internal_dto_account.RegisterReq:
     properties:
       company_address:
+        example: 浙江省宁波市奉化区江口街道聚潮路55号
         type: string
       company_name:
+        example: 宁波鲍斯产业链服务有限公司
         type: string
       confirmed_password:
+        example: "923845797582"
         type: string
       email:
+        example: 1921771473@qq.com
         type: string
       name:
+        example: 金晖
         type: string
       password:
+        example: "923845797582"
         type: string
       phone:
+        example: "13065859690"
         type: string
       username:
+        example: 金晖
         type: string
     required:
     - company_name
@@ -29,11 +81,28 @@ definitions:
   xinde_internal_dto_account.RegisterResp:
     properties:
       code:
+        example: 200
         type: integer
       data: {}
       message:
+        example: 操作成功
         type: string
       success:
+        example: true
+        type: boolean
+    type: object
+  xinde_pkg_response.Response:
+    properties:
+      code:
+        description: 业务状态码
+        type: integer
+      data:
+        description: 响应数据，空时不返回该字段
+      message:
+        description: 响应消息
+        type: string
+      success:
+        description: 是否成功
         type: boolean
     type: object
 host: localhost:8080
@@ -50,6 +119,40 @@ info:
   title: xinde API
   version: "1.0"
 paths:
+  /api/v1/account/login:
+    post:
+      consumes:
+      - application/json
+      description: 用户登录，返回JWT token和用户基本信息
+      parameters:
+      - description: Login Request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/xinde_internal_dto_account.LoginReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 登录成功
+          schema:
+            $ref: '#/definitions/xinde_internal_dto_account.LoginResp'
+        "400":
+          description: 参数错误
+          schema:
+            $ref: '#/definitions/xinde_pkg_response.Response'
+        "401":
+          description: 用户名或密码错误
+          schema:
+            $ref: '#/definitions/xinde_pkg_response.Response'
+        "500":
+          description: 服务器内部错误
+          schema:
+            $ref: '#/definitions/xinde_pkg_response.Response'
+      summary: 用户登录
+      tags:
+      - Account
   /api/v1/account/register:
     post:
       consumes:

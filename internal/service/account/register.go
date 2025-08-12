@@ -4,12 +4,14 @@ import (
 	"fmt"
 	registerDao "xinde/internal/dao/account"
 	dto "xinde/internal/dto/account"
+	"xinde/pkg/jwt"
 	"xinde/pkg/stderr"
 	"xinde/pkg/util"
 )
 
 type Service struct {
 	dao *registerDao.Dao
+	jwt *jwt.JWTService
 }
 
 func NewAccountService() (*Service, error) {
@@ -18,8 +20,11 @@ func NewAccountService() (*Service, error) {
 		return nil, fmt.Errorf("创建 DAO 实例失败: %w", err)
 	}
 
+	jwtService := jwt.NewJWTService()
+
 	return &Service{
 		dao: dao,
+		jwt: jwtService,
 	}, nil
 }
 
