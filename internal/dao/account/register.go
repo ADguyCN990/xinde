@@ -33,7 +33,7 @@ func (d *Dao) DB() *gorm.DB {
 // IsExistUser 根据username判断user是否已经存在
 func (d *Dao) IsExistUser(tx *gorm.DB, name string) (bool, error) {
 	if d == nil || d.db == nil || tx == nil {
-		return false, fmt.Errorf(stderr.ERROR_DB_NIL)
+		return false, fmt.Errorf(stderr.ErrorDbNil)
 	}
 
 	if name == "" {
@@ -54,7 +54,7 @@ func (d *Dao) IsExistUser(tx *gorm.DB, name string) (bool, error) {
 // CreateUser 在`t_user`表中创建用户
 func (d *Dao) CreateUser(tx *gorm.DB, username, email, name, companyName, companyAddress, password, phone string, companyID uint) (uint, error) {
 	if d == nil || d.db == nil || tx == nil {
-		return 0, fmt.Errorf(stderr.ERROR_DB_NIL)
+		return 0, fmt.Errorf(stderr.ErrorDbNil)
 	}
 
 	user := &account.User{
@@ -77,7 +77,7 @@ func (d *Dao) CreateUser(tx *gorm.DB, username, email, name, companyName, compan
 // FindOrCreateCompany 尝试根据Name查找公司，如果没有则创建一个新的公司
 func (d *Dao) FindOrCreateCompany(tx *gorm.DB, name, address string) (uint, error) {
 	if d == nil || d.db == nil || tx == nil {
-		return 0, fmt.Errorf(stderr.ERROR_DB_NIL)
+		return 0, fmt.Errorf(stderr.ErrorDbNil)
 	}
 
 	var company account.Company

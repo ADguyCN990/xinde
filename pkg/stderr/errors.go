@@ -8,8 +8,16 @@ const (
 )
 
 const (
-	ERROR_DB_NIL             = "dao或数据库连接为空"
-	ERROR_USER_ALREADY_EXIST = "用户已经存在"
+	ErrorDbNil            = "dao或数据库连接为空"
+	ErrorUserAlreadyExist = "用户已经存在"
+)
+
+// JWT token
+const (
+	ErrorTokenExpired     = "token已过期"
+	ErrorTokenNotValidYet = "token尚未生效"
+	ErrorTokenMalFormed   = "token格式错误"
+	ErrorTokenInvalid     = "token解析失败"
 )
 
 // MsgFlags 预定义的业务错误msg

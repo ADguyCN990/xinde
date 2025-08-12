@@ -53,10 +53,11 @@ func (ctrl *Controller) Register(c *gin.Context) {
 	// 校验完参数后，交由service层处理
 	_, err = ctrl.accountService.Register(&req)
 	if err != nil {
-		if err.Error() == stderr.ERROR_USER_ALREADY_EXIST {
+		if err.Error() == stderr.ErrorUserAlreadyExist {
 			response.Error(c, http.StatusConflict, response.CodeConflict, err.Error())
+		} else {
+			response.Error(c, http.StatusInternalServerError, response.CodeInternalError, err.Error())
 		}
-		response.Error(c, http.StatusInternalServerError, response.CodeInternalError, err.Error())
 		return
 	}
 	response.Success(c, nil)

@@ -47,7 +47,7 @@ func (s *Service) Register(req *dto.RegisterReq) (uint, error) {
 	}
 	if exists {
 		tx.Rollback()
-		return 0, fmt.Errorf(stderr.ERROR_USER_ALREADY_EXIST)
+		return 0, fmt.Errorf(stderr.ErrorUserAlreadyExist)
 	}
 
 	// 加密密码
