@@ -58,14 +58,14 @@ func (d *Dao) CreateUser(tx *gorm.DB, username, email, name, companyName, compan
 	}
 
 	user := &account.User{
-		Username:    username,
-		Name:        name,
-		UserEmail:   util.StringToPointer(email),
-		CompanyID:   companyID,
-		CompanyName: companyName,
-		CompanyArea: util.StringToPointer(companyAddress),
-		Password:    password,
-		Phone:       phone,
+		Username:       username,
+		Name:           name,
+		UserEmail:      util.StringToPointer(email),
+		CompanyID:      companyID,
+		CompanyName:    companyName,
+		CompanyAddress: util.StringToPointer(companyAddress),
+		Password:       password,
+		Phone:          phone,
 	}
 
 	if err := tx.Create(user).Error; err != nil {

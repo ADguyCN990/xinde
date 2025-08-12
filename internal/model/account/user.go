@@ -11,19 +11,19 @@ type User struct {
 	UID       uint           `gorm:"primaryKey;column:uid;autoIncrement"`
 	Username  string         `gorm:"column:username;not null;comment:用户账号"`
 	Password  string         `gorm:"column:password;comment:用户密码"` // 密码通常是 string 类型，即使数据库中是 NULL
-	Phone     string         `gorm:"column:usermobile;comment:用户电话号码"`
+	Phone     string         `gorm:"column:phone;comment:用户电话号码"`
 	IsAdmin   int8           `gorm:"column:is_admin;not null;default:0;comment:是否为管理员"` // tinyint -> int8
 	Remarks   *string        `gorm:"column:remarks;comment:备注"`
 	DeletedAt gorm.DeletedAt `gorm:"column:deleted_at;index"` // GORM 软删除
 
 	// 上次访问信息
-	LastTime     *time.Time `gorm:"column:lasttime;comment:上次访问时间"` //
-	SearchDevice *string    `gorm:"column:search_device;comment:上次访问的设备"`
+	RecentSearchAt *time.Time `gorm:"column:recent_search_at;comment:上次访问时间"` //
+	SearchDevice   *string    `gorm:"column:search_device;comment:上次访问的设备"`
 
 	// 公司信息
-	CompanyName string  `gorm:"column:comname;not null;comment:公司名称"`
-	CompanyArea *string `gorm:"column:comarea;comment:公司地址"`
-	CompanyID   uint    `gorm:"column:company_id;comment:用户对应的公司ID"` // 使用指针 *uint 来处理可为 NULL 的情况
+	CompanyName    string  `gorm:"column:company_name;not null;comment:公司名称"`
+	CompanyAddress *string `gorm:"column:company_address;comment:公司地址"`
+	CompanyID      uint    `gorm:"column:company_id;comment:用户对应的公司ID"` // 使用指针 *uint 来处理可为 NULL 的情况
 
 	// 用户个人信息
 	Name      string  `gorm:"column:name;not null;comment:用户真实姓名"`
