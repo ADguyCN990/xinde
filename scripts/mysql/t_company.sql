@@ -13,7 +13,8 @@ CREATE TABLE `t_company`
     `deleted_at`  timestamp                                                     NULL     DEFAULT NULL COMMENT '软删除时间戳', -- NULL 表示未删除                                                    NOT NULL DEFAULT '0' COMMENT '是否删除，0为未删除，1为已删除',
 
     PRIMARY KEY (`id`),
-    KEY `idx_is_deleted` (`deleted_at`)                                                                                       -- 为软删除标记添加索引
+    UNIQUE KEY `uk_name` (`name`),
+    KEY `idx_deleted_at` (`deleted_at`)                                                                                  -- 为软删除标记添加索引
 ) ENGINE = InnoDB
   AUTO_INCREMENT = 1
   DEFAULT CHARSET = utf8mb4

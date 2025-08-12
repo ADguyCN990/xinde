@@ -1,10 +1,10 @@
 package account
 
 import (
-	"errors"
 	"fmt"
 	registerDao "xinde/internal/dao/account"
 	dto "xinde/internal/dto/account"
+	"xinde/pkg/stderr"
 	"xinde/pkg/util"
 )
 
@@ -24,14 +24,30 @@ func NewAccountService() (*Service, error) {
 }
 
 func (s *Service) Register(req *dto.RegisterReq) (uint, error) {
-	// 检查用户是否存在
-	exists, err := s.dao.IsExistUser(req.Username)
-	if err != nil {
-		return 0, fmt.Errorf("检查用户是否存在失败: %w", err)
+	// 启动一个事务
+	tx := s.dao.DB().Begin() // 假设 s.dao.DB() 可以返回 *gorm.DB 实例
+	if tx.Error != nil {
+		return 0, fmt.Errorf("开启事务失败: %w", tx.Error)
 	}
 
+	// 使用 defer 来确保事务在函数退出时能被处理（提交或回滚）
+	defer func() {
+		if r := recover(); r != nil {
+			tx.Rollback() // 如果发生 panic，回滚事务
+		}
+	}()
+
+	// --- 在事务中执行所有数据库操作 ---
+
+	// 检查用户是否存在
+	exists, err := s.dao.IsExistUser(tx, req.Username)
+	if err != nil {
+		tx.Rollback()
+		return 0, err
+	}
 	if exists {
-		return 0, errors.New("用户已存在，注册失败")
+		tx.Rollback()
+		return 0, fmt.Errorf(stderr.ERROR_USER_ALREADY_EXIST)
 	}
 
 	// 加密密码
@@ -40,10 +56,25 @@ func (s *Service) Register(req *dto.RegisterReq) (uint, error) {
 		return 0, fmt.Errorf("密码加密失败: %w", err)
 	}
 
-	// 写入数据库
-	userID, err := s.dao.CreateUser(req.Username, req.Email, req.Name, req.CompanyName, req.CompanyAddress, hashedPassword, req.Phone)
+	// 判断公司有没有注册过，如果没有注册过的话，还要新建公司
+	companyID, err := s.dao.FindOrCreateCompany(tx, req.CompanyName, req.CompanyAddress)
 	if err != nil {
-		return 0, fmt.Errorf("创建用户失败: %w", err)
+		tx.Rollback()
+		return 0, err
+	}
+
+	// 写入数据库
+	userID, err := s.dao.CreateUser(tx, req.Username, req.Email, req.Name, req.CompanyName, req.CompanyAddress, hashedPassword, req.Phone, companyID)
+	if err != nil {
+		tx.Rollback()
+		return 0, err
+	}
+
+	// 所有操作成功，提交事务
+	if err := tx.Commit().Error; err != nil {
+		// 提交失败也需要回滚（虽然很少见），并记录错误
+		tx.Rollback()
+		return 0, fmt.Errorf("提交事务失败: %w", err)
 	}
 
 	return userID, nil
