@@ -4,6 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"net/http"
 	dto "xinde/internal/dto/account"
+	"xinde/pkg/logger"
 	"xinde/pkg/response"
 	"xinde/pkg/stderr"
 )
@@ -24,6 +25,7 @@ func (ctrl *Controller) Login(c *gin.Context) {
 	var req dto.LoginReq
 	if err := c.ShouldBind(&req); err != nil {
 		response.Error(c, http.StatusBadRequest, response.CodeInvalidParams, err.Error())
+		logger.Error("Login 绑定DTO错误: " + err.Error())
 		return
 	}
 
@@ -40,7 +42,9 @@ func (ctrl *Controller) Login(c *gin.Context) {
 		default:
 			response.Error(c, http.StatusInternalServerError, response.CodeInternalError, err.Error())
 		}
+		logger.Error("Login " + err.Error())
 		return
 	}
 	response.Success(c, loginRespData)
+	logger.Info("Login 用户 " + loginRespData.Username + " 登录成功")
 }

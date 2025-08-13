@@ -3,7 +3,6 @@ package account
 import (
 	"fmt"
 	dto "xinde/internal/dto/account"
-	"xinde/pkg/logger"
 	"xinde/pkg/stderr"
 	"xinde/pkg/util"
 )

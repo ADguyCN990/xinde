@@ -5,6 +5,7 @@ import (
 	"net/http"
 	dto "xinde/internal/dto/account"
 	service "xinde/internal/service/account"
+	"xinde/pkg/logger"
 	"xinde/pkg/response"
 	"xinde/pkg/stderr"
 )
@@ -41,12 +42,14 @@ func (ctrl *Controller) Register(c *gin.Context) {
 	var err error
 	if err := c.ShouldBind(&req); err != nil {
 		response.Error(c, http.StatusBadRequest, response.CodeInvalidParams, err.Error())
+		logger.Error("Register 绑定DTO错误: " + err.Error())
 		return
 	}
 
 	// 重复输入密码需一致
 	if req.Password != req.ConfirmedPassword {
 		response.Error(c, http.StatusBadRequest, response.CodeInvalidParams, "两次输入的密码不一致，请重新输入")
+		logger.Error("Register 两次输入的密码不一致")
 		return
 	}
 
@@ -58,7 +61,9 @@ func (ctrl *Controller) Register(c *gin.Context) {
 		} else {
 			response.Error(c, http.StatusInternalServerError, response.CodeInternalError, err.Error())
 		}
+		logger.Error("Register " + err.Error())
 		return
 	}
 	response.Success(c, nil)
+	logger.Info("Register 用户 " + req.Username + " 注册成功")
 }
