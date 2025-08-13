@@ -128,6 +128,52 @@ const docTemplate = `{
                 }
             }
         },
+        "/api/v1/admin/account/approval/list": {
+            "get": {
+                "description": "根据前端传来的字段，返回对应的待审批列表/已同意申请/已拒绝申请的用户列表，根据创建时间降序排列",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Account"
+                ],
+                "summary": "管理员查看用户审批列表",
+                "parameters": [
+                    {
+                        "description": "审批列表 Request",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/xinde_internal_dto_account.ApprovalListReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "查询成功",
+                        "schema": {
+                            "$ref": "#/definitions/xinde_internal_dto_account.ListResp"
+                        }
+                    },
+                    "400": {
+                        "description": "参数错误",
+                        "schema": {
+                            "$ref": "#/definitions/xinde_pkg_response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "服务器内部错误",
+                        "schema": {
+                            "$ref": "#/definitions/xinde_pkg_response.Response"
+                        }
+                    }
+                }
+            }
+        },
         "/api/v1/admin/account/list": {
             "get": {
                 "description": "返回已被通过注册申请的用户信息",
@@ -143,7 +189,7 @@ const docTemplate = `{
                 "summary": "管理员查看用户列表",
                 "parameters": [
                     {
-                        "description": "Login Request",
+                        "description": "用户列表 Request",
                         "name": "request",
                         "in": "body",
                         "required": true,
@@ -154,7 +200,7 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "登录成功",
+                        "description": "查询成功",
                         "schema": {
                             "$ref": "#/definitions/xinde_internal_dto_account.ListResp"
                         }
@@ -200,6 +246,9 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "xinde_internal_dto_account.ApprovalListReq": {
+            "type": "object"
+        },
         "xinde_internal_dto_account.ListData": {
             "type": "object",
             "properties": {

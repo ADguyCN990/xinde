@@ -11,6 +11,11 @@ const (
 	ErrorDbNil = "dao或数据库连接为空"
 )
 
+// pagination
+const (
+	ErrorOverLargePage = "查询页数过大"
+)
+
 // account
 const (
 	ErrorUserAlreadyExist = "用户已经存在"

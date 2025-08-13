@@ -65,38 +65,41 @@ func (d *Dao) FindUserByUsername(tx *gorm.DB, username string) (*account.User, e
 	return &user, nil
 }
 
-// FindUserListWithPagination 分页查找用户列表
-func (d *Dao) FindUserListWithPagination(tx *gorm.DB, page, pageSize int) ([]*account.User, int, error) {
+func (d *Dao) CountUserWithStatus(tx *gorm.DB, status int) (int64, error) {
 	if tx == nil {
-		return nil, 0, fmt.Errorf(stderr.ErrorDbNil)
+		return 0, fmt.Errorf(stderr.ErrorDbNil)
+	}
+	var count int64
+	err := tx.Model(&account.User{}).Where("is_user = ?", status).Count(&count).Error
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return 0, nil
+		}
+		return 0, fmt.Errorf("统计用户总数失败: %w", err)
+	}
+	return count, nil
+}
+
+// FindUserListWithPagination 分页查找用户列表
+func (d *Dao) FindUserListWithPagination(tx *gorm.DB, page, pageSize int) ([]*account.User, error) {
+	if tx == nil {
+		return nil, fmt.Errorf(stderr.ErrorDbNil)
 	}
 
 	var users []*account.User
-	var count int64
-
-	// 仅查询通过注册申请的用户数量
-	err := tx.Model(&account.User{}).Count(&count).Where("is_user = ?", 1).Error
-	if err != nil {
-		return nil, 0, fmt.Errorf("统计用户总数失败: %w", err)
-	}
-
-	// 如果没有查询到任何用户，直接返回
-	if count == 0 {
-		return users, 0, nil
-	}
 
 	// 执行查询
 	offset := (page - 1) * pageSize
-	err = tx.Model(&account.User{}).
+	err := tx.Model(&account.User{}).
 		Limit(pageSize).
 		Offset(offset).
 		Where("is_user = ?", 1).
 		Find(&users).Error
 	if err != nil {
-		return nil, 0, fmt.Errorf("统计用户列表失败: %w", err)
+		return nil, fmt.Errorf("统计用户列表失败: %w", err)
 	}
 
-	return users, offset, nil
+	return users, nil
 }
 
 // CreateUser 在`t_user`表中创建用户

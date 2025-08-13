@@ -1,10 +1,12 @@
 package account
 
 import (
-	"math"
+	"fmt"
+	_ "math"
 	_ "xinde/internal/dao/account"
 	dto "xinde/internal/dto/account"
 	model "xinde/internal/model/account"
+	"xinde/pkg/stderr"
 	_ "xinde/pkg/stderr"
 	"xinde/pkg/util"
 )
@@ -12,10 +14,21 @@ import (
 func (s *Service) GetUserList(page, pageSize int) (*dto.ListPageData, error) {
 	tx := s.dao.DB()
 
-	// 查询数据库获取当前页面的用户数据
-	dbData, totalCount, err := s.dao.FindUserListWithPagination(tx, page, pageSize)
+	// 计算总页数
+	count, err := s.dao.CountUserWithStatus(tx, model.UserApproved)
+	if err != nil {
+		return nil, err
+	}
+	pages := int((count + int64(pageSize-1)) / int64(pageSize))
 
-	// 没有需要特别注意的业务error，直接返回就行
+	// 要对page过大的情况做判断
+	currentPage := page
+	if currentPage > pages {
+		currentPage = pages
+	}
+
+	// 查询数据库获取当前页面的用户数据
+	dbData, err := s.dao.FindUserListWithPagination(tx, currentPage, pageSize)
 	if err != nil {
 		return nil, err
 	}
@@ -29,10 +42,15 @@ func (s *Service) GetUserList(page, pageSize int) (*dto.ListPageData, error) {
 	// 组装分页
 	pageData := &dto.ListPageData{
 		List:     listData,
-		Total:    totalCount,
-		Page:     page,
+		Total:    int(count),
+		Page:     currentPage,
 		PageSize: pageSize,
-		Pages:    int(math.Ceil(float64(totalCount) / float64(pageSize))),
+		Pages:    pages,
+	}
+
+	// 针对用户输入page过大的情况做特殊处理，返回最后一页的数据，但依然提交err
+	if page > pages {
+		return pageData, fmt.Errorf(stderr.ErrorOverLargePage)
 	}
 
 	return pageData, nil

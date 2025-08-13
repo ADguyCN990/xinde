@@ -1,6 +1,7 @@
 package account
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/spf13/viper"
 	"net/http"
@@ -16,8 +17,8 @@ import (
 // @Tags Account
 // @Accept json
 // @Produce json
-// @Param request body dto.ListReq true "Login Request"
-// @Success 200 {object} dto.ListResp "登录成功"
+// @Param request body dto.ListReq true "用户列表 Request"
+// @Success 200 {object} dto.ListResp "查询成功"
 // @Failure 400 {object} response.Response "参数错误"
 // @Failure 500 {object} response.Response "服务器内部错误"
 // @Router /api/v1/admin/account/list [get]
@@ -39,12 +40,14 @@ func (ctrl *Controller) List(c *gin.Context) {
 		switch err.Error() {
 		case stderr.ErrorDbNil:
 			response.Error(c, http.StatusInternalServerError, response.CodeInternalError, err.Error())
+			logger.Error("admin/account/list " + err.Error())
+		case stderr.ErrorOverLargePage:
+			response.SuccessWithMessage(c, fmt.Sprintf("%s, 跳转至最后一页", stderr.ErrorOverLargePage), list)
 		default:
 			response.Error(c, http.StatusInternalServerError, response.CodeInternalError, err.Error())
+			logger.Error("admin/account/list " + err.Error())
 		}
-		logger.Error("admin/account/list " + err.Error())
 		return
 	}
-
 	response.Success(c, list)
 }

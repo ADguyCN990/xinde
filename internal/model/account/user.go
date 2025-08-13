@@ -34,10 +34,16 @@ type User struct {
 	UpdatedAt time.Time  `gorm:"column:updated_at;not null"`
 	HandledAt *time.Time `gorm:"column:handled_at;comment:注册申请处理时间"` // 指针处理 NULL
 	IsUser    int        `gorm:"column:is_user;not null;comment:是否审核通过,0为未处理, 1为通过, 2为拒绝"`
-	Why       *string    `gorm:"column:why;comment:审核拒绝的原因"`
+	Why       *string    `gorm:"column:why;comment:审核通过/拒绝的原因"`
 }
 
 // TableName specifies the table name for the User model.
 func (User) TableName() string {
 	return "t_user"
 }
+
+const (
+	UserPending = iota
+	UserApproved
+	UserRejected
+)
