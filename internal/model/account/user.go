@@ -30,6 +30,7 @@ type User struct {
 	UserEmail *string `gorm:"column:user_email;comment:用户邮箱"` // 注意字段名中的连字符
 
 	// 注册与审核信息
+	CreatedAt time.Time  `gorm:"column:created_at;not null"`
 	UpdatedAt time.Time  `gorm:"column:updated_at;not null"`
 	HandledAt *time.Time `gorm:"column:handled_at;comment:注册申请处理时间"` // 指针处理 NULL
 	IsUser    int        `gorm:"column:is_user;not null;comment:是否审核通过,0为未处理, 1为通过, 2为拒绝"`

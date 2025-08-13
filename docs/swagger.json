@@ -122,6 +122,52 @@
                 }
             }
         },
+        "/api/v1/admin/account/list": {
+            "get": {
+                "description": "返回已被通过注册申请的用户信息",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Account"
+                ],
+                "summary": "管理员查看用户列表",
+                "parameters": [
+                    {
+                        "description": "Login Request",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/xinde_internal_dto_account.ListReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "登录成功",
+                        "schema": {
+                            "$ref": "#/definitions/xinde_internal_dto_account.ListResp"
+                        }
+                    },
+                    "400": {
+                        "description": "参数错误",
+                        "schema": {
+                            "$ref": "#/definitions/xinde_pkg_response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "服务器内部错误",
+                        "schema": {
+                            "$ref": "#/definitions/xinde_pkg_response.Response"
+                        }
+                    }
+                }
+            }
+        },
         "/ping": {
             "get": {
                 "description": "do ping",
@@ -148,6 +194,109 @@
         }
     },
     "definitions": {
+        "xinde_internal_dto_account.ListData": {
+            "type": "object",
+            "properties": {
+                "company_name": {
+                    "type": "string",
+                    "example": "宁波鲍斯产业链服务有限公司"
+                },
+                "created_at": {
+                    "type": "string",
+                    "example": "2020-09-08 09:08:09"
+                },
+                "email": {
+                    "type": "string",
+                    "example": "13800138000@qq.com"
+                },
+                "id": {
+                    "type": "integer",
+                    "example": 2
+                },
+                "name": {
+                    "type": "string",
+                    "example": "张三，真实名称"
+                },
+                "phone": {
+                    "type": "string",
+                    "example": "13800138000"
+                },
+                "price_level": {
+                    "type": "string",
+                    "example": "price_1"
+                },
+                "recent_search_at": {
+                    "type": "string",
+                    "example": "2020-09-08 09:08:09"
+                },
+                "remark": {
+                    "type": "string",
+                    "example": "备注"
+                },
+                "role": {
+                    "type": "string",
+                    "example": "普通用户"
+                },
+                "search_device": {
+                    "type": "string",
+                    "example": "车削刀杆"
+                },
+                "username": {
+                    "type": "string",
+                    "example": "张三，账号名称"
+                }
+            }
+        },
+        "xinde_internal_dto_account.ListPageData": {
+            "type": "object",
+            "properties": {
+                "list": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/xinde_internal_dto_account.ListData"
+                    }
+                },
+                "page": {
+                    "type": "integer",
+                    "example": 1
+                },
+                "pageSize": {
+                    "type": "integer",
+                    "example": 20
+                },
+                "pages": {
+                    "type": "integer",
+                    "example": 7
+                },
+                "total": {
+                    "type": "integer",
+                    "example": 137
+                }
+            }
+        },
+        "xinde_internal_dto_account.ListReq": {
+            "type": "object"
+        },
+        "xinde_internal_dto_account.ListResp": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer",
+                    "example": 200
+                },
+                "data": {
+                    "$ref": "#/definitions/xinde_internal_dto_account.ListPageData"
+                },
+                "message": {
+                    "type": "string",
+                    "example": "操作成功"
+                },
+                "success": {
+                    "type": "boolean",
+                    "example": true
+                }
+            }
+        },
         "xinde_internal_dto_account.LoginData": {
             "type": "object",
             "properties": {
@@ -223,7 +372,7 @@
             "properties": {
                 "company_address": {
                     "type": "string",
-                    "example": "浙江省宁波市奉化区江口街道聚潮路55号"
+                    "example": "浙江省宁波市奉化区江口街道聚潮路55号，可选"
                 },
                 "company_name": {
                     "type": "string",
@@ -235,11 +384,11 @@
                 },
                 "email": {
                     "type": "string",
-                    "example": "1921771473@qq.com"
+                    "example": "1921771473@qq.com，可选"
                 },
                 "name": {
                     "type": "string",
-                    "example": "金晖"
+                    "example": "金晖，真实姓名"
                 },
                 "password": {
                     "type": "string",
@@ -251,7 +400,7 @@
                 },
                 "username": {
                     "type": "string",
-                    "example": "金晖"
+                    "example": "金晖，账号名称"
                 }
             }
         },
