@@ -65,6 +65,7 @@ func (d *Dao) FindUserByUsername(tx *gorm.DB, username string) (*account.User, e
 	return &user, nil
 }
 
+// CountUserWithStatus 查询【未审批/已通过/以拒绝】用户的个数
 func (d *Dao) CountUserWithStatus(tx *gorm.DB, status int) (int64, error) {
 	if tx == nil {
 		return 0, fmt.Errorf(stderr.ErrorDbNil)
@@ -81,7 +82,7 @@ func (d *Dao) CountUserWithStatus(tx *gorm.DB, status int) (int64, error) {
 }
 
 // FindUserListWithPagination 分页查找用户列表
-func (d *Dao) FindUserListWithPagination(tx *gorm.DB, page, pageSize int) ([]*account.User, error) {
+func (d *Dao) FindUserListWithPagination(tx *gorm.DB, page, pageSize, status int) ([]*account.User, error) {
 	if tx == nil {
 		return nil, fmt.Errorf(stderr.ErrorDbNil)
 	}
@@ -90,11 +91,13 @@ func (d *Dao) FindUserListWithPagination(tx *gorm.DB, page, pageSize int) ([]*ac
 
 	// 执行查询
 	offset := (page - 1) * pageSize
-	err := tx.Model(&account.User{}).
+	err := tx.
+		Model(&account.User{}).
+		Where("is_user = ?", status).
 		Limit(pageSize).
 		Offset(offset).
-		Where("is_user = ?", 1).
-		Find(&users).Error
+		Find(&users).
+		Error
 	if err != nil {
 		return nil, fmt.Errorf("统计用户列表失败: %w", err)
 	}

@@ -1,7 +1,7 @@
 package account
 
 type ListReq struct {
-	Page     int `json:"page" form:"page" binding:"required,min=1" example:"1"`
+	Page     int `json:"page" form:"page" binding:"omitempty" example:"1"`
 	PageSize int `json:"page_size" form:"page_size" binding:"omitempty,min=1,max=100" example:"1-100，可选"`
 }
 

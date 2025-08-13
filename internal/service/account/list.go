@@ -20,15 +20,22 @@ func (s *Service) GetUserList(page, pageSize int) (*dto.ListPageData, error) {
 		return nil, err
 	}
 	pages := int((count + int64(pageSize-1)) / int64(pageSize))
+	if pages == 0 {
+		pages = 1
+	}
 
-	// 要对page过大的情况做判断
+	// 对page过大的情况做判断
 	currentPage := page
 	if currentPage > pages {
 		currentPage = pages
 	}
+	// 对page过小的情况做判断
+	if currentPage < 1 {
+		currentPage = 1
+	}
 
 	// 查询数据库获取当前页面的用户数据
-	dbData, err := s.dao.FindUserListWithPagination(tx, currentPage, pageSize)
+	dbData, err := s.dao.FindUserListWithPagination(tx, currentPage, pageSize, model.UserApproved)
 	if err != nil {
 		return nil, err
 	}
@@ -51,6 +58,10 @@ func (s *Service) GetUserList(page, pageSize int) (*dto.ListPageData, error) {
 	// 针对用户输入page过大的情况做特殊处理，返回最后一页的数据，但依然提交err
 	if page > pages {
 		return pageData, fmt.Errorf(stderr.ErrorOverLargePage)
+	}
+	// 针对用户输入page过小的情况做特殊处理，返回第一页的数据，但依然提交error
+	if page < 1 {
+		return pageData, fmt.Errorf(stderr.ErrorOverSmallPage)
 	}
 
 	return pageData, nil

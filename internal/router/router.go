@@ -45,7 +45,7 @@ func InitRouter() (*gin.Engine, error) {
 			adminAccountGroup := adminGroup.Group("/account")
 			{
 				adminAccountGroup.GET("/list", accountCtrl.List)
-				adminAccountGroup.GET("/approval/list")
+				adminAccountGroup.GET("/approval/list", accountCtrl.ApprovalList)
 			}
 		}
 

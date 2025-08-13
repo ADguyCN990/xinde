@@ -150,7 +150,7 @@
                     "200": {
                         "description": "查询成功",
                         "schema": {
-                            "$ref": "#/definitions/xinde_internal_dto_account.ListResp"
+                            "$ref": "#/definitions/xinde_internal_dto_account.ApprovalListResp"
                         }
                     },
                     "400": {
@@ -240,8 +240,92 @@
         }
     },
     "definitions": {
+        "xinde_internal_dto_account.ApprovalListData": {
+            "type": "object",
+            "properties": {
+                "company_name": {
+                    "type": "string",
+                    "example": "宁波鲍斯产业链服务有限公司"
+                },
+                "created_at": {
+                    "type": "string",
+                    "example": "2020-09-08 09:08:09"
+                },
+                "email": {
+                    "type": "string",
+                    "example": "13800138000@qq.com"
+                },
+                "id": {
+                    "type": "integer",
+                    "example": 2
+                },
+                "name": {
+                    "type": "string",
+                    "example": "张三，真实名称"
+                },
+                "phone": {
+                    "type": "string",
+                    "example": "13800138000"
+                },
+                "username": {
+                    "type": "string",
+                    "example": "张三，账号名称"
+                },
+                "why": {
+                    "type": "string",
+                    "example": "同意该用户的申请；拒绝该用户的申请"
+                }
+            }
+        },
+        "xinde_internal_dto_account.ApprovalListPageData": {
+            "type": "object",
+            "properties": {
+                "list": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/xinde_internal_dto_account.ApprovalListData"
+                    }
+                },
+                "page": {
+                    "type": "integer",
+                    "example": 1
+                },
+                "pageSize": {
+                    "type": "integer",
+                    "example": 20
+                },
+                "pages": {
+                    "type": "integer",
+                    "example": 7
+                },
+                "total": {
+                    "type": "integer",
+                    "example": 137
+                }
+            }
+        },
         "xinde_internal_dto_account.ApprovalListReq": {
             "type": "object"
+        },
+        "xinde_internal_dto_account.ApprovalListResp": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer",
+                    "example": 200
+                },
+                "data": {
+                    "$ref": "#/definitions/xinde_internal_dto_account.ApprovalListPageData"
+                },
+                "message": {
+                    "type": "string",
+                    "example": "操作成功"
+                },
+                "success": {
+                    "type": "boolean",
+                    "example": true
+                }
+            }
         },
         "xinde_internal_dto_account.ListData": {
             "type": "object",

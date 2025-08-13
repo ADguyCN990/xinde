@@ -14,6 +14,7 @@ const (
 // pagination
 const (
 	ErrorOverLargePage = "查询页数过大"
+	ErrorOverSmallPage = "查询页数过小"
 )
 
 // account

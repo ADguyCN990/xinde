@@ -43,6 +43,8 @@ func (ctrl *Controller) List(c *gin.Context) {
 			logger.Error("admin/account/list " + err.Error())
 		case stderr.ErrorOverLargePage:
 			response.SuccessWithMessage(c, fmt.Sprintf("%s, 跳转至最后一页", stderr.ErrorOverLargePage), list)
+		case stderr.ErrorOverSmallPage:
+			response.SuccessWithMessage(c, fmt.Sprintf("%s, 跳转至第一页", stderr.ErrorOverSmallPage), list)
 		default:
 			response.Error(c, http.StatusInternalServerError, response.CodeInternalError, err.Error())
 			logger.Error("admin/account/list " + err.Error())

@@ -1,6 +1,66 @@
 basePath: /api/v1
 definitions:
+  xinde_internal_dto_account.ApprovalListData:
+    properties:
+      company_name:
+        example: 宁波鲍斯产业链服务有限公司
+        type: string
+      created_at:
+        example: "2020-09-08 09:08:09"
+        type: string
+      email:
+        example: 13800138000@qq.com
+        type: string
+      id:
+        example: 2
+        type: integer
+      name:
+        example: 张三，真实名称
+        type: string
+      phone:
+        example: "13800138000"
+        type: string
+      username:
+        example: 张三，账号名称
+        type: string
+      why:
+        example: 同意该用户的申请；拒绝该用户的申请
+        type: string
+    type: object
+  xinde_internal_dto_account.ApprovalListPageData:
+    properties:
+      list:
+        items:
+          $ref: '#/definitions/xinde_internal_dto_account.ApprovalListData'
+        type: array
+      page:
+        example: 1
+        type: integer
+      pageSize:
+        example: 20
+        type: integer
+      pages:
+        example: 7
+        type: integer
+      total:
+        example: 137
+        type: integer
+    type: object
   xinde_internal_dto_account.ApprovalListReq:
+    type: object
+  xinde_internal_dto_account.ApprovalListResp:
+    properties:
+      code:
+        example: 200
+        type: integer
+      data:
+        $ref: '#/definitions/xinde_internal_dto_account.ApprovalListPageData'
+      message:
+        example: 操作成功
+        type: string
+      success:
+        example: true
+        type: boolean
     type: object
   xinde_internal_dto_account.ListData:
     properties:
@@ -281,7 +341,7 @@ paths:
         "200":
           description: 查询成功
           schema:
-            $ref: '#/definitions/xinde_internal_dto_account.ListResp'
+            $ref: '#/definitions/xinde_internal_dto_account.ApprovalListResp'
         "400":
           description: 参数错误
           schema:

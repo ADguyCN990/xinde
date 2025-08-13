@@ -8,7 +8,7 @@ type RegisterReq struct {
 	Phone             string `form:"phone" json:"phone" binding:"required" example:"13065859690"`
 	CompanyName       string `form:"company_name" json:"company_name" binding:"required" example:"宁波鲍斯产业链服务有限公司"`
 	CompanyAddress    string `form:"company_address" json:"company_address,omitempty" example:"浙江省宁波市奉化区江口街道聚潮路55号，可选"`
-	Email             string `form:"email" json:"email,omitempty" binding:"email" example:"1921771473@qq.com，可选"`
+	Email             string `form:"email" json:"email,omitempty" binding:"omitempty" example:"1921771473@qq.com，可选"`
 }
 
 type RegisterResp struct {
