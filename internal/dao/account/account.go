@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"gorm.io/gorm"
+	"gorm.io/gorm/clause"
 	"xinde/internal/model/account"
 	"xinde/internal/store"
 	"xinde/pkg/stderr"
@@ -49,6 +50,22 @@ func (d *Dao) IsExistUser(tx *gorm.DB, name string) (bool, error) {
 		return false, fmt.Errorf("查询用户失败: %w", err)
 	}
 	return true, nil
+}
+
+// GetUserByIDForUpdate 带行级锁，根据ID查找用户
+func (d *Dao) GetUserByIDForUpdate(tx *gorm.DB, uid uint) (*account.User, error) {
+	if tx == nil {
+		return nil, fmt.Errorf(stderr.ErrorDbNil)
+	}
+
+	var user account.User
+	// 行级锁，防止其他管理员同时审批这个用户
+	err := tx.Clauses(clause.Locking{Strength: "UPDATE"}).Where("uid = ?", uid).First(&user).Error
+	if err != nil {
+		return nil, err
+	}
+
+	return &user, nil
 }
 
 // FindUserByUsername 根据username查找用户
@@ -126,6 +143,18 @@ func (d *Dao) CreateUser(tx *gorm.DB, username, email, name, companyName, compan
 		return 0, fmt.Errorf("创建用户失败: %w", err)
 	}
 	return user.UID, nil
+}
+
+// UpdateUser 更新用户
+func (d *Dao) UpdateUser(tx *gorm.DB, uid uint, updateData map[string]interface{}) error {
+	if tx == nil {
+		return fmt.Errorf(stderr.ErrorDbNil)
+	}
+	err := tx.Model(account.User{}).Where("uid = ?", uid).Updates(updateData).Error
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 // FindOrCreateCompany 尝试根据Name查找公司，如果没有则创建一个新的公司

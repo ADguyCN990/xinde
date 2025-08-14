@@ -62,6 +62,34 @@ definitions:
         example: true
         type: boolean
     type: object
+  xinde_internal_dto_account.ApproveReq:
+    properties:
+      status:
+        enum:
+        - approve
+        - reject
+        example: approve或者reject
+        type: string
+      why:
+        example: 批准/拒绝用户申请的理由
+        type: string
+    required:
+    - status
+    - why
+    type: object
+  xinde_internal_dto_account.ApproveResp:
+    properties:
+      code:
+        example: 200
+        type: integer
+      data: {}
+      message:
+        example: 操作成功
+        type: string
+      success:
+        example: true
+        type: boolean
+    type: object
   xinde_internal_dto_account.ListData:
     properties:
       company_name:
@@ -321,6 +349,52 @@ paths:
           schema:
             $ref: '#/definitions/xinde_internal_dto_account.RegisterResp'
       summary: 注册一个新用户
+      tags:
+      - Account
+  /api/v1/admin/account/approval/{id}:
+    post:
+      consumes:
+      - application/json
+      description: 批准用户申请，管理员决定是否同意用户的注册申请
+      parameters:
+      - description: Login Request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/xinde_internal_dto_account.ApproveReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 审批成功
+          schema:
+            $ref: '#/definitions/xinde_internal_dto_account.ApproveResp'
+        "400":
+          description: 参数错误
+          schema:
+            $ref: '#/definitions/xinde_pkg_response.Response'
+        "401":
+          description: access_token有错误
+          schema:
+            $ref: '#/definitions/xinde_pkg_response.Response'
+        "403":
+          description: 没有管理员权限
+          schema:
+            $ref: '#/definitions/xinde_pkg_response.Response'
+        "404":
+          description: 没有该用户
+          schema:
+            $ref: '#/definitions/xinde_pkg_response.Response'
+        "409":
+          description: 用户已经被审批
+          schema:
+            $ref: '#/definitions/xinde_pkg_response.Response'
+        "500":
+          description: 服务器内部错误
+          schema:
+            $ref: '#/definitions/xinde_pkg_response.Response'
+      summary: 批准用户申请
       tags:
       - Account
   /api/v1/admin/account/approval/list:

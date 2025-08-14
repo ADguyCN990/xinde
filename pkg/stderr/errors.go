@@ -19,10 +19,13 @@ const (
 
 // account
 const (
+	ErrorUserNotFound     = "用户不存在 "
 	ErrorUserAlreadyExist = "用户已经存在"
 	ErrorUserUnauthorized = "用户名或密码错误"
 	ErrorUserNotPass      = "用户尚未被管理员通过注册申请"
-	ErrorUserBanned       = "用户被管理员拒绝注册申请"
+	ErrorUserBanned       = "用户已经被管理员拒绝注册申请"
+	ErrorUserPassed       = "用户已经被管理员批准注册申请"
+	ErrorUserIDInvalid    = "无效的用户ID格式"
 )
 
 // JWT token

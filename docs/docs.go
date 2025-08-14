@@ -174,6 +174,76 @@ const docTemplate = `{
                 }
             }
         },
+        "/api/v1/admin/account/approval/{id}": {
+            "post": {
+                "description": "批准用户申请，管理员决定是否同意用户的注册申请",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Account"
+                ],
+                "summary": "批准用户申请",
+                "parameters": [
+                    {
+                        "description": "Login Request",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/xinde_internal_dto_account.ApproveReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "审批成功",
+                        "schema": {
+                            "$ref": "#/definitions/xinde_internal_dto_account.ApproveResp"
+                        }
+                    },
+                    "400": {
+                        "description": "参数错误",
+                        "schema": {
+                            "$ref": "#/definitions/xinde_pkg_response.Response"
+                        }
+                    },
+                    "401": {
+                        "description": "access_token有错误",
+                        "schema": {
+                            "$ref": "#/definitions/xinde_pkg_response.Response"
+                        }
+                    },
+                    "403": {
+                        "description": "没有管理员权限",
+                        "schema": {
+                            "$ref": "#/definitions/xinde_pkg_response.Response"
+                        }
+                    },
+                    "404": {
+                        "description": "没有该用户",
+                        "schema": {
+                            "$ref": "#/definitions/xinde_pkg_response.Response"
+                        }
+                    },
+                    "409": {
+                        "description": "用户已经被审批",
+                        "schema": {
+                            "$ref": "#/definitions/xinde_pkg_response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "服务器内部错误",
+                        "schema": {
+                            "$ref": "#/definitions/xinde_pkg_response.Response"
+                        }
+                    }
+                }
+            }
+        },
         "/api/v1/admin/account/list": {
             "get": {
                 "description": "返回已被通过注册申请的用户信息",
@@ -323,6 +393,45 @@ const docTemplate = `{
                 "data": {
                     "$ref": "#/definitions/xinde_internal_dto_account.ApprovalListPageData"
                 },
+                "message": {
+                    "type": "string",
+                    "example": "操作成功"
+                },
+                "success": {
+                    "type": "boolean",
+                    "example": true
+                }
+            }
+        },
+        "xinde_internal_dto_account.ApproveReq": {
+            "type": "object",
+            "required": [
+                "status",
+                "why"
+            ],
+            "properties": {
+                "status": {
+                    "type": "string",
+                    "enum": [
+                        "approve",
+                        "reject"
+                    ],
+                    "example": "approve或者reject"
+                },
+                "why": {
+                    "type": "string",
+                    "example": "批准/拒绝用户申请的理由"
+                }
+            }
+        },
+        "xinde_internal_dto_account.ApproveResp": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer",
+                    "example": 200
+                },
+                "data": {},
                 "message": {
                     "type": "string",
                     "example": "操作成功"

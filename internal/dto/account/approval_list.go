@@ -3,7 +3,7 @@ package account
 type ApprovalListReq struct {
 	Page     int    `json:"page" form:"page" binding:"omitempty" example:"1"`
 	PageSize int    `json:"page_size" form:"page_size" binding:"omitempty,min=1,max=100" example:"1-100，可选"`
-	Status   string `json:"status" form:"status" binding:"omitempty" example:"pending或approved或rejected"` // oneof 校验参数必须是其中之一
+	Status   string `json:"status" form:"status" binding:"omitempty" example:"pending或approved或rejected"`
 }
 
 type ApprovalListData struct {
