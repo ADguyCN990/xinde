@@ -74,6 +74,9 @@ func (s *Service) convertUserToDTOListData(user *model.User) *dto.ListData {
 	} else {
 		userRole = "普通用户"
 	}
+
+	//TODO 价格等级
+	//TODO 用户访问记录
 	return &dto.ListData{
 		ID:             user.UID,
 		Name:           user.Name,

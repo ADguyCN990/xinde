@@ -42,12 +42,15 @@ func InitRouter() (*gin.Engine, error) {
 		adminGroup := apiV1.Group("/admin")
 		adminGroup.Use(auth.JWTAuth(), auth.AdminAuth())
 		{
+			//TODO 用户访问记录
 			adminAccountGroup := adminGroup.Group("/account")
 			{
 				adminAccountGroup.GET("/list", accountCtrl.List)
 				adminAccountGroup.GET("/approval/list", accountCtrl.ApprovalList)
 				adminAccountGroup.POST("/approval/:id", accountCtrl.Approve)
 				adminAccountGroup.DELETE("/:id", accountCtrl.DeleteUser)
+				adminAccountGroup.POST("/reset/password/:id", accountCtrl.ResetPassword)
+				adminAccountGroup.PATCH("/reset/remark/:id", accountCtrl.ResetRemark)
 			}
 		}
 
