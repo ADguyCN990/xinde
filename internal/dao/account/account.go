@@ -44,12 +44,23 @@ func (d *Dao) IsExistUser(tx *gorm.DB, name string) (bool, error) {
 	var user account.User
 	err := tx.Where("username = ?", name).First(&user).Error
 	if err != nil {
-		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return false, nil
-		}
-		return false, fmt.Errorf("查询用户失败: %w", err)
+		return false, err
 	}
 	return true, nil
+}
+
+// IsExistUserByID 根据ID判断用户是否存在
+func (d *Dao) IsExistUserByID(tx *gorm.DB, uid uint) (bool, error) {
+	if tx == nil {
+		return false, fmt.Errorf(stderr.ErrorDbNil)
+	}
+	var count int64
+	// GORM 的查询会自动处理 `deleted_at IS NULL`
+	err := tx.Model(&account.User{}).Where("uid = ?", uid).Count(&count).Error
+	if err != nil {
+		return false, err
+	}
+	return count > 0, nil
 }
 
 // GetUserByIDForUpdate 带行级锁，根据ID查找用户
@@ -60,7 +71,7 @@ func (d *Dao) GetUserByIDForUpdate(tx *gorm.DB, uid uint) (*account.User, error)
 
 	var user account.User
 	// 行级锁，防止其他管理员同时审批这个用户
-	err := tx.Clauses(clause.Locking{Strength: "UPDATE"}).Where("uid = ?", uid).First(&user).Error
+	err := tx.Clauses(clause.Locking{Strength: "UPDATE", Options: "NOWAIT"}).Where("uid = ?", uid).First(&user).Error
 	if err != nil {
 		return nil, err
 	}
@@ -176,4 +187,43 @@ func (d *Dao) FindOrCreateCompany(tx *gorm.DB, name, address string) (uint, erro
 	}
 
 	return company.ID, nil
+}
+
+// DeleteUserByID 根据ID删除用户
+func (d *Dao) DeleteUserByID(tx *gorm.DB, uid uint) error {
+	if tx == nil {
+		return fmt.Errorf(stderr.ErrorDbNil)
+	}
+	var user account.User
+	err := tx.Where("uid = ?", uid).Delete(&user).Error
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+// Transaction 添加事务包装方法
+func (d *Dao) Transaction(fn func(*gorm.DB) error) error {
+	tx := d.db.Begin()
+	if tx.Error != nil {
+		return fmt.Errorf("开启事务失败: %w", tx.Error)
+	}
+
+	defer func() {
+		if r := recover(); r != nil {
+			tx.Rollback()
+			panic(r) // 重新抛出 panic
+		}
+	}()
+
+	if err := fn(tx); err != nil {
+		tx.Rollback()
+		return err
+	}
+
+	if err := tx.Commit().Error; err != nil {
+		return fmt.Errorf("提交事务失败: %w", err)
+	}
+
+	return nil
 }

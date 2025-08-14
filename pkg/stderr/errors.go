@@ -8,6 +8,10 @@ const (
 )
 
 const (
+	ErrorInternalServerError = "服务器内部错误"
+)
+
+const (
 	ErrorDbNil = "dao或数据库连接为空"
 )
 

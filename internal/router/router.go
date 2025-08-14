@@ -47,6 +47,7 @@ func InitRouter() (*gin.Engine, error) {
 				adminAccountGroup.GET("/list", accountCtrl.List)
 				adminAccountGroup.GET("/approval/list", accountCtrl.ApprovalList)
 				adminAccountGroup.POST("/approval/:id", accountCtrl.Approve)
+				adminAccountGroup.DELETE("/:id", accountCtrl.DeleteUser)
 			}
 		}
 

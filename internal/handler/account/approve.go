@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
-	"strconv"
 	dto "xinde/internal/dto/account"
 	model "xinde/internal/model/account"
 	"xinde/pkg/logger"
@@ -28,16 +27,10 @@ import (
 // @Failure 500 {object} response.Response "服务器内部错误"
 // @Router /api/v1/admin/account/approval/{id} [post]
 func (ctrl *Controller) Approve(c *gin.Context) {
-	idStr := c.Param("id")
-	id, err := strconv.ParseUint(idStr, 10, 32)
+	id, err := ctrl.getIDFromUrl(c)
 	if err != nil {
 		response.Error(c, http.StatusBadRequest, response.CodeInvalidParams, stderr.ErrorUserIDInvalid)
-		logger.Error("admin/account/approval 无效的用户ID格式: " + idStr)
-		return
-	}
-	if id < 1 {
-		response.Error(c, http.StatusBadRequest, response.CodeInvalidParams, stderr.ErrorUserIDInvalid)
-		logger.Error("admin/account/approval 无效的用户ID格式: " + idStr)
+		logger.Error("admin/account/approval 无效的用户ID格式: " + c.Param("id"))
 		return
 	}
 
