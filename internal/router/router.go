@@ -50,7 +50,7 @@ func InitRouter() (*gin.Engine, error) {
 				adminAccountGroup.POST("/approval/:id", accountCtrl.Approve)
 				adminAccountGroup.DELETE("/:id", accountCtrl.DeleteUser)
 				adminAccountGroup.POST("/reset/password/:id", accountCtrl.ResetPassword)
-				adminAccountGroup.PATCH("/reset/remark/:id", accountCtrl.ResetRemark)
+				adminAccountGroup.PATCH("/remark/:id", accountCtrl.ResetRemark)
 			}
 		}
 
