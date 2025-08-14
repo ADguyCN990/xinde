@@ -33,7 +33,7 @@ func (ctrl *Controller) UpdatePassword(c *gin.Context) {
 	}
 
 	var req dto.UpdatePasswordReq
-	if err := c.ShouldBindJSON(&req); err != nil {
+	if err := c.ShouldBind(&req); err != nil {
 		response.Error(c, http.StatusBadRequest, response.CodeInvalidParams, err.Error())
 		logger.Error("/admin/account/password/patch 参数绑定错误: " + err.Error())
 		return
