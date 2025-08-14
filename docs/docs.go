@@ -290,6 +290,70 @@ const docTemplate = `{
                 }
             }
         },
+        "/api/v1/admin/account/password/{id}": {
+            "patch": {
+                "description": "管理员根据用户ID修改用户的密码",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Account"
+                ],
+                "summary": "修改密码",
+                "parameters": [
+                    {
+                        "description": "UpdatePassword　Request",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/xinde_internal_dto_account.UpdatePasswordReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "修改密码成功",
+                        "schema": {
+                            "$ref": "#/definitions/xinde_pkg_response.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "参数错误",
+                        "schema": {
+                            "$ref": "#/definitions/xinde_pkg_response.Response"
+                        }
+                    },
+                    "401": {
+                        "description": "access_token有错误",
+                        "schema": {
+                            "$ref": "#/definitions/xinde_pkg_response.Response"
+                        }
+                    },
+                    "403": {
+                        "description": "没有管理员权限",
+                        "schema": {
+                            "$ref": "#/definitions/xinde_pkg_response.Response"
+                        }
+                    },
+                    "404": {
+                        "description": "没有该用户",
+                        "schema": {
+                            "$ref": "#/definitions/xinde_pkg_response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "服务器内部错误",
+                        "schema": {
+                            "$ref": "#/definitions/xinde_pkg_response.Response"
+                        }
+                    }
+                }
+            }
+        },
         "/api/v1/admin/account/remark/{id}": {
             "patch": {
                 "description": "管理员根据用户ID修改用户的备注信息",
@@ -302,7 +366,7 @@ const docTemplate = `{
                 "tags": [
                     "Account"
                 ],
-                "summary": "修改",
+                "summary": "修改备注",
                 "parameters": [
                     {
                         "description": "ResetRemark　Request",
@@ -316,7 +380,7 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "重置密码成功",
+                        "description": "修改备注成功",
                         "schema": {
                             "$ref": "#/definitions/xinde_pkg_response.Response"
                         }
@@ -846,6 +910,18 @@ const docTemplate = `{
                 "remark": {
                     "type": "string",
                     "example": "这是一条备注"
+                }
+            }
+        },
+        "xinde_internal_dto_account.UpdatePasswordReq": {
+            "type": "object",
+            "required": [
+                "password"
+            ],
+            "properties": {
+                "password": {
+                    "type": "string",
+                    "example": "这是一个密码"
                 }
             }
         },
