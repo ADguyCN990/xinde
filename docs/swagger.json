@@ -137,13 +137,16 @@
                 "summary": "管理员查看用户审批列表",
                 "parameters": [
                     {
-                        "description": "审批列表 Request",
-                        "name": "request",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/xinde_internal_dto_account.ApprovalListReq"
-                        }
+                        "type": "integer",
+                        "description": "当前页数，可选，默认为1",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "一页的内容数量，可选，默认为设置的默认值",
+                        "name": "page_size",
+                        "in": "query"
                     }
                 ],
                 "responses": {
@@ -253,13 +256,16 @@
                 "summary": "管理员查看用户列表",
                 "parameters": [
                     {
-                        "description": "用户列表 Request",
-                        "name": "request",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/xinde_internal_dto_account.ListReq"
-                        }
+                        "type": "integer",
+                        "description": "当前页数，可选，默认为1",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "一页的内容数量，可选，默认为设置的默认值",
+                        "name": "page_size",
+                        "in": "query"
                     }
                 ],
                 "responses": {
@@ -518,6 +524,67 @@
                 }
             }
         },
+        "/api/v1/admin/company/list": {
+            "get": {
+                "description": "返回所有的公司信息",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Company"
+                ],
+                "summary": "管理员查看公司列表",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "当前页数，可选，默认为1",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "一页的内容数量，可选，默认为设置的默认值",
+                        "name": "page_size",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "查询成功",
+                        "schema": {
+                            "$ref": "#/definitions/xinde_internal_dto_company.ListResp"
+                        }
+                    },
+                    "400": {
+                        "description": "参数错误",
+                        "schema": {
+                            "$ref": "#/definitions/xinde_pkg_response.Response"
+                        }
+                    },
+                    "401": {
+                        "description": "token错误",
+                        "schema": {
+                            "$ref": "#/definitions/xinde_pkg_response.Response"
+                        }
+                    },
+                    "403": {
+                        "description": "没有管理员权限",
+                        "schema": {
+                            "$ref": "#/definitions/xinde_pkg_response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "服务器内部错误",
+                        "schema": {
+                            "$ref": "#/definitions/xinde_pkg_response.Response"
+                        }
+                    }
+                }
+            }
+        },
         "/ping": {
             "get": {
                 "description": "do ping",
@@ -607,9 +674,6 @@
                     "example": 137
                 }
             }
-        },
-        "xinde_internal_dto_account.ApprovalListReq": {
-            "type": "object"
         },
         "xinde_internal_dto_account.ApprovalListResp": {
             "type": "object",
@@ -749,9 +813,6 @@
                     "example": 137
                 }
             }
-        },
-        "xinde_internal_dto_account.ListReq": {
-            "type": "object"
         },
         "xinde_internal_dto_account.ListResp": {
             "type": "object",
@@ -916,6 +977,78 @@
                 "password": {
                     "type": "string",
                     "example": "这是一个密码"
+                }
+            }
+        },
+        "xinde_internal_dto_company.ListData": {
+            "type": "object",
+            "properties": {
+                "address": {
+                    "type": "string",
+                    "example": "浙江省宁波市奉化区江口街道聚潮路55号"
+                },
+                "created_at": {
+                    "type": "string",
+                    "example": "2021-09-09 09:09:09"
+                },
+                "id": {
+                    "type": "integer",
+                    "example": 1
+                },
+                "name": {
+                    "type": "string",
+                    "example": "宁波鲍斯产业链有限公司"
+                },
+                "price_level": {
+                    "type": "string",
+                    "example": "折扣等级1 折扣等级2 折扣等级3 折扣等级4"
+                }
+            }
+        },
+        "xinde_internal_dto_company.ListPageData": {
+            "type": "object",
+            "properties": {
+                "list": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/xinde_internal_dto_company.ListData"
+                    }
+                },
+                "page": {
+                    "type": "integer",
+                    "example": 1
+                },
+                "pageSize": {
+                    "type": "integer",
+                    "example": 20
+                },
+                "pages": {
+                    "type": "integer",
+                    "example": 7
+                },
+                "total": {
+                    "type": "integer",
+                    "example": 137
+                }
+            }
+        },
+        "xinde_internal_dto_company.ListResp": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer",
+                    "example": 200
+                },
+                "data": {
+                    "$ref": "#/definitions/xinde_internal_dto_company.ListPageData"
+                },
+                "message": {
+                    "type": "string",
+                    "example": "操作成功"
+                },
+                "success": {
+                    "type": "boolean",
+                    "example": true
                 }
             }
         },

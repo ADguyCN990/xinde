@@ -18,7 +18,8 @@ import (
 // @Tags Account
 // @Accept json
 // @Produce json
-// @Param request body dto.ApprovalListReq true "审批列表 Request"
+// @Param page query int false "当前页数，可选，默认为1"
+// @Param page_size query int false "一页的内容数量，可选，默认为设置的默认值"
 // @Success 200 {object} dto.ApprovalListResp "查询成功"
 // @Failure 400 {object} response.Response "参数错误"
 // @Failure 500 {object} response.Response "服务器内部错误"

@@ -46,8 +46,6 @@ definitions:
         example: 137
         type: integer
     type: object
-  xinde_internal_dto_account.ApprovalListReq:
-    type: object
   xinde_internal_dto_account.ApprovalListResp:
     properties:
       code:
@@ -147,8 +145,6 @@ definitions:
       total:
         example: 137
         type: integer
-    type: object
-  xinde_internal_dto_account.ListReq:
     type: object
   xinde_internal_dto_account.ListResp:
     properties:
@@ -268,6 +264,57 @@ definitions:
         type: string
     required:
     - password
+    type: object
+  xinde_internal_dto_company.ListData:
+    properties:
+      address:
+        example: 浙江省宁波市奉化区江口街道聚潮路55号
+        type: string
+      created_at:
+        example: "2021-09-09 09:09:09"
+        type: string
+      id:
+        example: 1
+        type: integer
+      name:
+        example: 宁波鲍斯产业链有限公司
+        type: string
+      price_level:
+        example: 折扣等级1 折扣等级2 折扣等级3 折扣等级4
+        type: string
+    type: object
+  xinde_internal_dto_company.ListPageData:
+    properties:
+      list:
+        items:
+          $ref: '#/definitions/xinde_internal_dto_company.ListData'
+        type: array
+      page:
+        example: 1
+        type: integer
+      pageSize:
+        example: 20
+        type: integer
+      pages:
+        example: 7
+        type: integer
+      total:
+        example: 137
+        type: integer
+    type: object
+  xinde_internal_dto_company.ListResp:
+    properties:
+      code:
+        example: 200
+        type: integer
+      data:
+        $ref: '#/definitions/xinde_internal_dto_company.ListPageData'
+      message:
+        example: 操作成功
+        type: string
+      success:
+        example: true
+        type: boolean
     type: object
   xinde_pkg_response.Response:
     properties:
@@ -452,12 +499,14 @@ paths:
       - application/json
       description: 根据前端传来的字段，返回对应的待审批列表/已同意申请/已拒绝申请的用户列表，根据创建时间降序排列
       parameters:
-      - description: 审批列表 Request
-        in: body
-        name: request
-        required: true
-        schema:
-          $ref: '#/definitions/xinde_internal_dto_account.ApprovalListReq'
+      - description: 当前页数，可选，默认为1
+        in: query
+        name: page
+        type: integer
+      - description: 一页的内容数量，可选，默认为设置的默认值
+        in: query
+        name: page_size
+        type: integer
       produces:
       - application/json
       responses:
@@ -482,12 +531,14 @@ paths:
       - application/json
       description: 返回已被通过注册申请的用户信息
       parameters:
-      - description: 用户列表 Request
-        in: body
-        name: request
-        required: true
-        schema:
-          $ref: '#/definitions/xinde_internal_dto_account.ListReq'
+      - description: 当前页数，可选，默认为1
+        in: query
+        name: page
+        type: integer
+      - description: 一页的内容数量，可选，默认为设置的默认值
+        in: query
+        name: page_size
+        type: integer
       produces:
       - application/json
       responses:
@@ -625,6 +676,46 @@ paths:
       summary: 重置用户密码
       tags:
       - Account
+  /api/v1/admin/company/list:
+    get:
+      consumes:
+      - application/json
+      description: 返回所有的公司信息
+      parameters:
+      - description: 当前页数，可选，默认为1
+        in: query
+        name: page
+        type: integer
+      - description: 一页的内容数量，可选，默认为设置的默认值
+        in: query
+        name: page_size
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 查询成功
+          schema:
+            $ref: '#/definitions/xinde_internal_dto_company.ListResp'
+        "400":
+          description: 参数错误
+          schema:
+            $ref: '#/definitions/xinde_pkg_response.Response'
+        "401":
+          description: token错误
+          schema:
+            $ref: '#/definitions/xinde_pkg_response.Response'
+        "403":
+          description: 没有管理员权限
+          schema:
+            $ref: '#/definitions/xinde_pkg_response.Response'
+        "500":
+          description: 服务器内部错误
+          schema:
+            $ref: '#/definitions/xinde_pkg_response.Response'
+      summary: 管理员查看公司列表
+      tags:
+      - Company
   /ping:
     get:
       consumes:
