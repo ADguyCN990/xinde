@@ -25,3 +25,29 @@ func NewCommonDao() (*Dao, error) {
 func (d *Dao) DB() *gorm.DB {
 	return d.db
 }
+
+// Transaction 添加事务包装方法
+func (d *Dao) Transaction(fn func(*gorm.DB) error) error {
+	tx := d.db.Begin()
+	if tx.Error != nil {
+		return fmt.Errorf("开启事务失败: %w", tx.Error)
+	}
+
+	defer func() {
+		if r := recover(); r != nil {
+			tx.Rollback()
+			panic(r) // 重新抛出 panic
+		}
+	}()
+
+	if err := fn(tx); err != nil {
+		tx.Rollback()
+		return err
+	}
+
+	if err := tx.Commit().Error; err != nil {
+		return fmt.Errorf("提交事务失败: %w", err)
+	}
+
+	return nil
+}

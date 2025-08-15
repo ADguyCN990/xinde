@@ -32,6 +32,12 @@ const (
 	ErrorUserIDInvalid    = "无效的用户ID格式"
 )
 
+// company
+const (
+	ErrorCompanyNotFound  = "公司不存在"
+	ErrorCompanyIDInvalid = "无效的公司ID格式"
+)
+
 // JWT token
 const (
 	ErrorTokenExpired     = "token已过期"

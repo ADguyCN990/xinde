@@ -62,6 +62,7 @@ func InitRouter() (*gin.Engine, error) {
 			adminCompanyGroup := adminGroup.Group("/company")
 			{
 				adminCompanyGroup.GET("/list", companyCtrl.List)
+				adminCompanyGroup.PATCH("/price/level/:id", companyCtrl.UpdatePriceLevel)
 			}
 		}
 

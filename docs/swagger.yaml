@@ -316,6 +316,19 @@ definitions:
         example: true
         type: boolean
     type: object
+  xinde_internal_dto_company.UpdatePriceLevelReq:
+    properties:
+      price_level:
+        enum:
+        - price_1
+        - price_2
+        - price_3
+        - price_4
+        example: price_1或price_2或price_3或price_4
+        type: string
+    required:
+    - price_level
+    type: object
   xinde_pkg_response.Response:
     properties:
       code:
@@ -714,6 +727,48 @@ paths:
           schema:
             $ref: '#/definitions/xinde_pkg_response.Response'
       summary: 管理员查看公司列表
+      tags:
+      - Company
+  /api/v1/admin/company/price/level/{id}:
+    patch:
+      consumes:
+      - application/json
+      description: 管理员根据公司ID修改公司的价格等级
+      parameters:
+      - description: UpdatePriceLevel　Request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/xinde_internal_dto_company.UpdatePriceLevelReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 修改价格等级成功
+          schema:
+            $ref: '#/definitions/xinde_pkg_response.Response'
+        "400":
+          description: 参数错误
+          schema:
+            $ref: '#/definitions/xinde_pkg_response.Response'
+        "401":
+          description: access_token有错误
+          schema:
+            $ref: '#/definitions/xinde_pkg_response.Response'
+        "403":
+          description: 没有管理员权限
+          schema:
+            $ref: '#/definitions/xinde_pkg_response.Response'
+        "404":
+          description: 没有该公司
+          schema:
+            $ref: '#/definitions/xinde_pkg_response.Response'
+        "500":
+          description: 服务器内部错误
+          schema:
+            $ref: '#/definitions/xinde_pkg_response.Response'
+      summary: 修改价格等级
       tags:
       - Company
   /ping:
