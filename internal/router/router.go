@@ -7,6 +7,7 @@ import (
 	ginSwagger "github.com/swaggo/gin-swagger"
 	"xinde/internal/handler"
 	"xinde/internal/handler/account"
+	"xinde/internal/handler/company"
 	"xinde/internal/middleware/auth"
 )
 
@@ -20,6 +21,10 @@ func InitRouter() (*gin.Engine, error) {
 	accountCtrl, err := account.NewAccountController()
 	if err != nil {
 		return nil, fmt.Errorf("初始化AccountController失败: %w", err)
+	}
+	companyCtrl, err := company.NewCompanyController()
+	if err != nil {
+		return nil, fmt.Errorf("初始化CompanyController失败: %w", err)
 	}
 
 	// API v1 routes
@@ -45,13 +50,18 @@ func InitRouter() (*gin.Engine, error) {
 			//TODO 用户访问记录
 			adminAccountGroup := adminGroup.Group("/account")
 			{
-				adminAccountGroup.GET("/list", accountCtrl.List)
+				adminAccountGroup.GET("/list", accountCtrl.List) //TODO 接入价格等级和用户访问记录
 				adminAccountGroup.GET("/approval/list", accountCtrl.ApprovalList)
 				adminAccountGroup.POST("/approval/:id", accountCtrl.Approve)
 				adminAccountGroup.DELETE("/:id", accountCtrl.DeleteUser)
 				adminAccountGroup.POST("/reset/password/:id", accountCtrl.ResetPassword)
 				adminAccountGroup.PATCH("/remark/:id", accountCtrl.ResetRemark)
 				adminAccountGroup.PATCH("/password/:id", accountCtrl.UpdatePassword)
+			}
+
+			adminCompanyGroup := adminGroup.Group("/company")
+			{
+				adminCompanyGroup.GET("/list", companyCtrl.List)
 			}
 		}
 
