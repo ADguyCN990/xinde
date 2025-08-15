@@ -8,6 +8,7 @@ import (
 	"xinde/internal/handler"
 	"xinde/internal/handler/account"
 	"xinde/internal/handler/company"
+	"xinde/internal/handler/price"
 	"xinde/internal/middleware/auth"
 )
 
@@ -25,6 +26,10 @@ func InitRouter() (*gin.Engine, error) {
 	companyCtrl, err := company.NewCompanyController()
 	if err != nil {
 		return nil, fmt.Errorf("初始化CompanyController失败: %w", err)
+	}
+	priceCtrl, err := price.NewController()
+	if err != nil {
+		return nil, fmt.Errorf("初始化PriceController失败: %w", err)
 	}
 
 	// API v1 routes
@@ -63,6 +68,11 @@ func InitRouter() (*gin.Engine, error) {
 			{
 				adminCompanyGroup.GET("/list", companyCtrl.List)
 				adminCompanyGroup.PATCH("/price/level/:id", companyCtrl.UpdatePriceLevel)
+			}
+
+			adminPriceGroup := adminGroup.Group("/price")
+			{
+				adminPriceGroup.GET("/list", priceCtrl.List)
 			}
 		}
 
