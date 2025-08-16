@@ -3,6 +3,7 @@ package price
 import (
 	"fmt"
 	"gorm.io/gorm"
+	"gorm.io/gorm/clause"
 	"xinde/internal/dao/common"
 	model "xinde/internal/model/price"
 	"xinde/internal/store"
@@ -62,4 +63,15 @@ func (d *Dao) FindPriceListWithPagination(tx *gorm.DB, page, pageSize int) ([]*m
 		return nil, fmt.Errorf("分页查找价格列表失败: " + err.Error())
 	}
 	return list, nil
+}
+
+func (d *Dao) UpsertPrices(tx *gorm.DB, price *model.Price) error {
+	if tx == nil {
+		return fmt.Errorf(stderr.ErrorDbNil)
+	}
+	return tx.Clauses(clause.OnConflict{
+		Columns:   []clause.Column{{Name: "product_code"}},
+		DoUpdates: clause.AssignmentColumns([]string{"unit", "price_1", "price_2", "price_3", "price_4"}),
+	}).Create(price).Error
+	
 }
