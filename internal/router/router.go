@@ -73,7 +73,7 @@ func InitRouter() (*gin.Engine, error) {
 			adminPriceGroup := adminGroup.Group("/price")
 			{
 				adminPriceGroup.GET("/list", priceCtrl.List)
-				adminPriceGroup.POST("/import", priceCtrl.Import)
+				adminPriceGroup.POST("/import", priceCtrl.Import) //TODO 配合附件管理
 			}
 		}
 

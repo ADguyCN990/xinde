@@ -11,7 +11,7 @@ import (
 // Import handles the import of price data from an Excel file.
 // @Summary      导入价格Excel文件
 // @Description  上传一个包含价格信息的Excel文件，系统将解析文件内容并批量更新或插入价格数据。如果产品编码已存在，则会用新数据覆盖。
-// @Tags         Admin-PriceManagement
+// @Tags         Price
 // @Accept       multipart/form-data
 // @Produce      json
 // @Param        file formData file true "要上传的Excel文件 (格式: .xlsx)"
