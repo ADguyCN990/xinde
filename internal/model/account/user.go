@@ -24,6 +24,8 @@ type User struct {
 	CompanyName    string  `gorm:"column:company_name;not null;comment:公司名称"`
 	CompanyAddress *string `gorm:"column:company_address;comment:公司地址"`
 	CompanyID      uint    `gorm:"column:company_id;comment:用户对应的公司ID"` // 使用指针 *uint 来处理可为 NULL 的情况
+	// --- 核心修改：使用 readonly 标签 ---
+	PriceLevel string `gorm:"->"`
 
 	// 用户个人信息
 	Name      string  `gorm:"column:name;not null;comment:用户真实姓名"`

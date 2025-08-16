@@ -75,7 +75,6 @@ func (s *Service) convertUserToDTOListData(user *model.User) *dto.ListData {
 		userRole = "普通用户"
 	}
 
-	//TODO 价格等级
 	//TODO 用户访问记录
 	return &dto.ListData{
 		ID:             user.UID,
@@ -84,7 +83,7 @@ func (s *Service) convertUserToDTOListData(user *model.User) *dto.ListData {
 		Phone:          user.Phone,
 		Email:          util.DerefString(user.UserEmail),
 		CompanyName:    user.CompanyName,
-		PriceLevel:     "TODO,价格管理",
+		PriceLevel:     user.PriceLevel,
 		Remark:         util.DerefString(user.Remarks),
 		Role:           userRole,
 		CreatedAt:      util.FormatNullableTimeToStandardString(user.HandledAt),

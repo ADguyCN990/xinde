@@ -55,7 +55,7 @@ func InitRouter() (*gin.Engine, error) {
 			//TODO 用户访问记录
 			adminAccountGroup := adminGroup.Group("/account")
 			{
-				adminAccountGroup.GET("/list", accountCtrl.List) //TODO 接入价格等级和用户访问记录
+				adminAccountGroup.GET("/list", accountCtrl.List) //TODO 接入用户访问记录
 				adminAccountGroup.GET("/approval/list", accountCtrl.ApprovalList)
 				adminAccountGroup.POST("/approval/:id", accountCtrl.Approve)
 				adminAccountGroup.DELETE("/:id", accountCtrl.DeleteUser)
