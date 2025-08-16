@@ -649,6 +649,67 @@
                 }
             }
         },
+        "/api/v1/admin/price/list": {
+            "get": {
+                "description": "返回所有产品的价格信息",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Price"
+                ],
+                "summary": "管理员查看价格列表",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "当前页数，可选，默认为1",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "一页的内容数量，可选，默认为设置的默认值",
+                        "name": "page_size",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "查询成功",
+                        "schema": {
+                            "$ref": "#/definitions/xinde_internal_dto_price.ListResp"
+                        }
+                    },
+                    "400": {
+                        "description": "参数错误",
+                        "schema": {
+                            "$ref": "#/definitions/xinde_pkg_response.Response"
+                        }
+                    },
+                    "401": {
+                        "description": "token错误",
+                        "schema": {
+                            "$ref": "#/definitions/xinde_pkg_response.Response"
+                        }
+                    },
+                    "403": {
+                        "description": "没有管理员权限",
+                        "schema": {
+                            "$ref": "#/definitions/xinde_pkg_response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "服务器内部错误",
+                        "schema": {
+                            "$ref": "#/definitions/xinde_pkg_response.Response"
+                        }
+                    }
+                }
+            }
+        },
         "/ping": {
             "get": {
                 "description": "do ping",
@@ -1131,6 +1192,86 @@
                         "price_4"
                     ],
                     "example": "price_1或price_2或price_3或price_4"
+                }
+            }
+        },
+        "xinde_internal_dto_price.ListData": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer",
+                    "example": 1
+                },
+                "price_1": {
+                    "type": "number",
+                    "example": 1571.3
+                },
+                "price_2": {
+                    "type": "number",
+                    "example": 1445.6
+                },
+                "price_3": {
+                    "type": "number",
+                    "example": 1230
+                },
+                "price_4": {
+                    "type": "number",
+                    "example": 1127
+                },
+                "product_code": {
+                    "type": "string",
+                    "example": "WGC001547"
+                },
+                "unit": {
+                    "type": "string",
+                    "example": "PCS"
+                }
+            }
+        },
+        "xinde_internal_dto_price.ListPageData": {
+            "type": "object",
+            "properties": {
+                "list": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/xinde_internal_dto_price.ListData"
+                    }
+                },
+                "page": {
+                    "type": "integer",
+                    "example": 1
+                },
+                "pageSize": {
+                    "type": "integer",
+                    "example": 20
+                },
+                "pages": {
+                    "type": "integer",
+                    "example": 7
+                },
+                "total": {
+                    "type": "integer",
+                    "example": 137
+                }
+            }
+        },
+        "xinde_internal_dto_price.ListResp": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer",
+                    "example": 200
+                },
+                "data": {
+                    "$ref": "#/definitions/xinde_internal_dto_price.ListPageData"
+                },
+                "message": {
+                    "type": "string",
+                    "example": "操作成功"
+                },
+                "success": {
+                    "type": "boolean",
+                    "example": true
                 }
             }
         },

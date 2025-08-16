@@ -4,7 +4,9 @@ import (
 	"fmt"
 	"gorm.io/gorm"
 	"xinde/internal/dao/common"
+	model "xinde/internal/model/price"
 	"xinde/internal/store"
+	"xinde/pkg/stderr"
 )
 
 type Dao struct {
@@ -27,4 +29,37 @@ func NewPriceDao() (*Dao, error) {
 		db:        db,
 		commonDao: commonDao,
 	}, nil
+}
+
+// DB 返回原始的 gorm.DB 实例，以便 Service 层可以开启事务
+func (d *Dao) DB() *gorm.DB {
+	return d.db
+}
+
+// CountPrices 统计价格总数
+func (d *Dao) CountPrices(tx *gorm.DB) (int64, error) {
+	if tx == nil {
+		return 0, fmt.Errorf(stderr.ErrorDbNil)
+	}
+
+	var count int64
+	err := tx.Model(model.Price{}).Count(&count).Error
+	if err != nil {
+		return 0, fmt.Errorf("统计价格总数失败: " + err.Error())
+	}
+	return count, nil
+}
+
+func (d *Dao) FindPriceListWithPagination(tx *gorm.DB, page, pageSize int) ([]*model.Price, error) {
+	if tx == nil {
+		return nil, fmt.Errorf(stderr.ErrorDbNil)
+	}
+
+	var list []*model.Price
+	offset := (page - 1) * pageSize
+	err := tx.Model(&model.Price{}).Limit(pageSize).Offset(offset).Find(&list).Error
+	if err != nil {
+		return nil, fmt.Errorf("分页查找价格列表失败: " + err.Error())
+	}
+	return list, nil
 }

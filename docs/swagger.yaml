@@ -329,6 +329,63 @@ definitions:
     required:
     - price_level
     type: object
+  xinde_internal_dto_price.ListData:
+    properties:
+      id:
+        example: 1
+        type: integer
+      price_1:
+        example: 1571.3
+        type: number
+      price_2:
+        example: 1445.6
+        type: number
+      price_3:
+        example: 1230
+        type: number
+      price_4:
+        example: 1127
+        type: number
+      product_code:
+        example: WGC001547
+        type: string
+      unit:
+        example: PCS
+        type: string
+    type: object
+  xinde_internal_dto_price.ListPageData:
+    properties:
+      list:
+        items:
+          $ref: '#/definitions/xinde_internal_dto_price.ListData'
+        type: array
+      page:
+        example: 1
+        type: integer
+      pageSize:
+        example: 20
+        type: integer
+      pages:
+        example: 7
+        type: integer
+      total:
+        example: 137
+        type: integer
+    type: object
+  xinde_internal_dto_price.ListResp:
+    properties:
+      code:
+        example: 200
+        type: integer
+      data:
+        $ref: '#/definitions/xinde_internal_dto_price.ListPageData'
+      message:
+        example: 操作成功
+        type: string
+      success:
+        example: true
+        type: boolean
+    type: object
   xinde_pkg_response.Response:
     properties:
       code:
@@ -771,6 +828,46 @@ paths:
       summary: 修改价格等级
       tags:
       - Company
+  /api/v1/admin/price/list:
+    get:
+      consumes:
+      - application/json
+      description: 返回所有产品的价格信息
+      parameters:
+      - description: 当前页数，可选，默认为1
+        in: query
+        name: page
+        type: integer
+      - description: 一页的内容数量，可选，默认为设置的默认值
+        in: query
+        name: page_size
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 查询成功
+          schema:
+            $ref: '#/definitions/xinde_internal_dto_price.ListResp'
+        "400":
+          description: 参数错误
+          schema:
+            $ref: '#/definitions/xinde_pkg_response.Response'
+        "401":
+          description: token错误
+          schema:
+            $ref: '#/definitions/xinde_pkg_response.Response'
+        "403":
+          description: 没有管理员权限
+          schema:
+            $ref: '#/definitions/xinde_pkg_response.Response'
+        "500":
+          description: 服务器内部错误
+          schema:
+            $ref: '#/definitions/xinde_pkg_response.Response'
+      summary: 管理员查看价格列表
+      tags:
+      - Price
   /ping:
     get:
       consumes:
