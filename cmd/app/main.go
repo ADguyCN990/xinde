@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"flag"
 	"fmt"
 	"golang.org/x/net/context"
@@ -73,7 +74,7 @@ func main() {
 	// 7. 启动服务器在一个单独的 goroutine 中
 	go func() {
 		logger.Info(fmt.Sprintf("服务正在启动，监听端口: %d", port))
-		if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+		if err := srv.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {
 			logger.Fatal("服务器启动失败", zap.Error(err))
 		}
 	}()
