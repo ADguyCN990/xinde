@@ -31,6 +31,10 @@ func InitRouter() (*gin.Engine, error) {
 	if err != nil {
 		return nil, fmt.Errorf("初始化PriceController失败: %w", err)
 	}
+	//attachmentCtrl, err := attachment.NewAttachmentController()
+	//if err != nil {
+	//	return nil, fmt.Errorf("初始化AttachmentController失败: %w", err)
+	//}
 
 	// API v1 routes
 	apiV1 := router.Group("/api/v1")
@@ -74,6 +78,11 @@ func InitRouter() (*gin.Engine, error) {
 			{
 				adminPriceGroup.GET("/list", priceCtrl.List)
 				adminPriceGroup.POST("/import", priceCtrl.Import) //TODO 配合附件管理
+			}
+
+			attachmentGroup := adminGroup.Group("/attachment")
+			{
+				attachmentGroup.GET("/list")
 			}
 		}
 
