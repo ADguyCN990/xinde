@@ -91,5 +91,6 @@ func convertPriceToDTOListData(price *model.Price) *dto.ListData {
 		Price3:      price.Price3,
 		Price4:      price.Price4,
 		Unit:        price.Unit,
+		SpecCode:    price.SpecCode,
 	}
 }

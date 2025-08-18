@@ -10,6 +10,7 @@ type Price struct {
 	ID          uint   `gorm:"primaryKey;column:id;autoIncrement"`
 	ProductCode string `gorm:"column:product_code;unique;not null"`
 	Unit        string `gorm:"column:unit;not null"`
+	SpecCode    string `gorm:"column:spec_code;not null"`
 
 	// 在 Go 中，decimal 通常用 string 或专门的 decimal 类型来精确表示
 	// 使用 float64 可能会有精度问题，但对于业务计算通常也够用。

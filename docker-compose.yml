@@ -19,6 +19,7 @@ services:
   app:
     # build: . 表示使用当前目录下的 Dockerfile 来构建 Go 应用的镜像
     build: .
+    image: xinde-api:latest
     container_name: xinde-api-server
     restart: unless-stopped
     # 端口映射: 将主机的 8080 端口映射到容器的 8080 端口

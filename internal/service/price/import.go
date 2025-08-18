@@ -105,5 +105,6 @@ func (s *Service) parsePriceRow(row []string) (*model.Price, error) {
 		Price3:      price3,
 		Price4:      price4,
 		Unit:        row[5],
+		SpecCode:    row[6],
 	}, nil
 }

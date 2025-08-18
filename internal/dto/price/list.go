@@ -13,6 +13,7 @@ type ListData struct {
 	Price3      float64 `json:"price_3" example:"1230.00"`
 	Price4      float64 `json:"price_4" example:"1127.00"`
 	Unit        string  `json:"unit" example:"PCS"`
+	SpecCode    string  `json:"scpc_code" example:"SDQCR1212H07"`
 }
 
 type ListPageData struct {

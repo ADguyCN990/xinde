@@ -71,7 +71,7 @@ func (d *Dao) UpsertPrices(tx *gorm.DB, price *model.Price) error {
 	}
 	return tx.Clauses(clause.OnConflict{
 		Columns:   []clause.Column{{Name: "product_code"}},
-		DoUpdates: clause.AssignmentColumns([]string{"unit", "price_1", "price_2", "price_3", "price_4"}),
+		DoUpdates: clause.AssignmentColumns([]string{"unit", "spec_code", "price_1", "price_2", "price_3", "price_4"}),
 	}).Create(price).Error
-	
+
 }
