@@ -265,6 +265,66 @@ definitions:
     required:
     - password
     type: object
+  xinde_internal_dto_attachment.ListData:
+    properties:
+      business_type:
+        example: price_import
+        type: string
+      created_at:
+        type: string
+      file_size:
+        example: 1.2MB
+        type: string
+      file_type:
+        example: xxxxyyyzzz.xlsx
+        type: string
+      filename:
+        example: 价格表
+        type: string
+      id:
+        example: 1
+        type: integer
+      storage_driver:
+        example: local或oss或其他
+        type: string
+      uploaded_by:
+        description: 显示上传者用户名，而不是ID
+        example: admin
+        type: string
+    type: object
+  xinde_internal_dto_attachment.ListPageData:
+    properties:
+      list:
+        items:
+          $ref: '#/definitions/xinde_internal_dto_attachment.ListData'
+        type: array
+      page:
+        example: 1
+        type: integer
+      pageSize:
+        example: 20
+        type: integer
+      pages:
+        example: 7
+        type: integer
+      total:
+        example: 137
+        type: integer
+    type: object
+  xinde_internal_dto_attachment.ListResp:
+    properties:
+      code:
+        example: 200
+        type: integer
+      data:
+        $ref: '#/definitions/xinde_internal_dto_attachment.ListPageData'
+      message:
+        example: 操作成功
+        type: string
+      success:
+        example: true
+        type: boolean
+    type: object
   xinde_internal_dto_company.ListData:
     properties:
       address:
@@ -348,6 +408,9 @@ definitions:
         type: number
       product_code:
         example: WGC001547
+        type: string
+      spec_code:
+        example: SDQCR1212H07
         type: string
       unit:
         example: PCS
@@ -746,6 +809,57 @@ paths:
       summary: 重置用户密码
       tags:
       - Account
+  /api/v1/admin/attachment/list:
+    get:
+      consumes:
+      - application/json
+      description: 根据筛选条件分页获取已上传的附件列表
+      parameters:
+      - description: 页码
+        in: query
+        name: page
+        required: true
+        type: integer
+      - description: 每页数量
+        in: query
+        name: pageSize
+        type: integer
+      - description: 业务类型 (e.g., price_import)
+        in: query
+        name: business_type
+        type: string
+      - description: 文件名 (模糊搜索)
+        in: query
+        name: filename
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 成功返回附件列表
+          schema:
+            $ref: '#/definitions/xinde_internal_dto_attachment.ListResp'
+        "400":
+          description: 请求参数错误
+          schema:
+            $ref: '#/definitions/xinde_pkg_response.Response'
+        "401":
+          description: Token错误
+          schema:
+            $ref: '#/definitions/xinde_pkg_response.Response'
+        "403":
+          description: 没有管理员权限
+          schema:
+            $ref: '#/definitions/xinde_pkg_response.Response'
+        "500":
+          description: 服务器内部错误
+          schema:
+            $ref: '#/definitions/xinde_pkg_response.Response'
+      security:
+      - ApiKeyAuth: []
+      summary: 获取附件列表
+      tags:
+      - Attachment
   /api/v1/admin/company/list:
     get:
       consumes:

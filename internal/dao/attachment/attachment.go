@@ -14,6 +14,12 @@ type Dao struct {
 	commonDao *common.Dao
 }
 
+type ListParams struct {
+	Page     int
+	PageSize int
+	Filename string
+}
+
 func NewAttachmentDao() (*Dao, error) {
 	db := store.GetDB()
 	if db == nil {
@@ -34,6 +40,40 @@ func NewAttachmentDao() (*Dao, error) {
 // DB 返回原始的 gorm.DB 实例，以便 Service 层可以开启事务
 func (d *Dao) DB() *gorm.DB {
 	return d.db
+}
+
+func (d *Dao) CountWithParams(tx *gorm.DB, params *ListParams) (int64, error) {
+	if tx == nil {
+		return 0, fmt.Errorf(stderr.ErrorDbNil)
+	}
+	queryBuilder := tx.Model(model.Attachment{})
+	if params.Filename != "" {
+		queryBuilder = queryBuilder.Where("t_attachment.filename LIKE ?", "%"+params.Filename+"%")
+	}
+	var count int64
+	if err := queryBuilder.Count(&count).Error; err != nil {
+		return 0, fmt.Errorf("统计附件总数失败: " + err.Error())
+	}
+	return count, nil
+}
+
+func (d *Dao) FindAttachmentListWithPagination(tx *gorm.DB, params *ListParams) ([]*model.Attachment, error) {
+	if tx == nil {
+		return nil, fmt.Errorf(stderr.ErrorDbNil)
+	}
+	var list []*model.Attachment
+	queryBuilder := tx.Model(&model.Attachment{}).
+		Select("t_attachment.*, t_user.name as uploader_name").
+		Joins("LEFT JOIN t_user ON t_user.uid = t_attachment.uploaded_by_uid")
+	if params.Filename != "" {
+		queryBuilder = queryBuilder.Where("t_attachment.filename LIKE ?", "%"+params.Filename+"%")
+	}
+
+	offset := params.PageSize * (params.Page - 1)
+	if err := queryBuilder.Order("t_attachment.id desc").Offset(offset).Limit(params.PageSize).Find(&list).Error; err != nil {
+		return nil, fmt.Errorf("分页查找价格列表失败: " + err.Error())
+	}
+	return list, nil
 }
 
 func (d *Dao) Create(tx *gorm.DB, att *model.Attachment) error {

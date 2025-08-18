@@ -55,3 +55,23 @@ func SaveUploadedFile(fileHeader *multipart.FileHeader) (string, error) {
 	// 8. 返回存入数据库的相对路径
 	return relativePath, nil
 }
+
+// 格式化文件大小为 KB, MB, GB
+func FormatFileSize(size uint64) string {
+	const (
+		B  = 1
+		KB = 1024 * B
+		MB = 1024 * KB
+		GB = 1024 * MB
+	)
+	switch {
+	case size >= GB:
+		return fmt.Sprintf("%.2f GB", float64(size)/GB)
+	case size >= MB:
+		return fmt.Sprintf("%.2f MB", float64(size)/MB)
+	case size >= KB:
+		return fmt.Sprintf("%.2f KB", float64(size)/KB)
+	default:
+		return fmt.Sprintf("%d B", size)
+	}
+}

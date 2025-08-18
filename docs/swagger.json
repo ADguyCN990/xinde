@@ -524,6 +524,85 @@
                 }
             }
         },
+        "/api/v1/admin/attachment/list": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "根据筛选条件分页获取已上传的附件列表",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Attachment"
+                ],
+                "summary": "获取附件列表",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "页码",
+                        "name": "page",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "每页数量",
+                        "name": "pageSize",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "业务类型 (e.g., price_import)",
+                        "name": "business_type",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "文件名 (模糊搜索)",
+                        "name": "filename",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "成功返回附件列表",
+                        "schema": {
+                            "$ref": "#/definitions/xinde_internal_dto_attachment.ListResp"
+                        }
+                    },
+                    "400": {
+                        "description": "请求参数错误",
+                        "schema": {
+                            "$ref": "#/definitions/xinde_pkg_response.Response"
+                        }
+                    },
+                    "401": {
+                        "description": "Token错误",
+                        "schema": {
+                            "$ref": "#/definitions/xinde_pkg_response.Response"
+                        }
+                    },
+                    "403": {
+                        "description": "没有管理员权限",
+                        "schema": {
+                            "$ref": "#/definitions/xinde_pkg_response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "服务器内部错误",
+                        "schema": {
+                            "$ref": "#/definitions/xinde_pkg_response.Response"
+                        }
+                    }
+                }
+            }
+        },
         "/api/v1/admin/company/list": {
             "get": {
                 "description": "返回所有的公司信息",
@@ -1166,6 +1245,90 @@
                 }
             }
         },
+        "xinde_internal_dto_attachment.ListData": {
+            "type": "object",
+            "properties": {
+                "business_type": {
+                    "type": "string",
+                    "example": "price_import"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "file_size": {
+                    "type": "string",
+                    "example": "1.2MB"
+                },
+                "file_type": {
+                    "type": "string",
+                    "example": "xxxxyyyzzz.xlsx"
+                },
+                "filename": {
+                    "type": "string",
+                    "example": "价格表"
+                },
+                "id": {
+                    "type": "integer",
+                    "example": 1
+                },
+                "storage_driver": {
+                    "type": "string",
+                    "example": "local或oss或其他"
+                },
+                "uploaded_by": {
+                    "description": "显示上传者用户名，而不是ID",
+                    "type": "string",
+                    "example": "admin"
+                }
+            }
+        },
+        "xinde_internal_dto_attachment.ListPageData": {
+            "type": "object",
+            "properties": {
+                "list": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/xinde_internal_dto_attachment.ListData"
+                    }
+                },
+                "page": {
+                    "type": "integer",
+                    "example": 1
+                },
+                "pageSize": {
+                    "type": "integer",
+                    "example": 20
+                },
+                "pages": {
+                    "type": "integer",
+                    "example": 7
+                },
+                "total": {
+                    "type": "integer",
+                    "example": 137
+                }
+            }
+        },
+        "xinde_internal_dto_attachment.ListResp": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer",
+                    "example": 200
+                },
+                "data": {
+                    "$ref": "#/definitions/xinde_internal_dto_attachment.ListPageData"
+                },
+                "message": {
+                    "type": "string",
+                    "example": "操作成功"
+                },
+                "success": {
+                    "type": "boolean",
+                    "example": true
+                }
+            }
+        },
         "xinde_internal_dto_company.ListData": {
             "type": "object",
             "properties": {
@@ -1282,6 +1445,10 @@
                 "product_code": {
                     "type": "string",
                     "example": "WGC001547"
+                },
+                "spec_code": {
+                    "type": "string",
+                    "example": "SDQCR1212H07"
                 },
                 "unit": {
                     "type": "string",

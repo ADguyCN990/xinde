@@ -58,7 +58,7 @@ func (d *Dao) FindPriceListWithPagination(tx *gorm.DB, page, pageSize int) ([]*m
 
 	var list []*model.Price
 	offset := (page - 1) * pageSize
-	err := tx.Model(&model.Price{}).Limit(pageSize).Offset(offset).Find(&list).Error
+	err := tx.Model(&model.Price{}).Order("id asc").Limit(pageSize).Offset(offset).Find(&list).Error
 	if err != nil {
 		return nil, fmt.Errorf("分页查找价格列表失败: " + err.Error())
 	}

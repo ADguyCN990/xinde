@@ -7,6 +7,7 @@ import (
 	ginSwagger "github.com/swaggo/gin-swagger"
 	"xinde/internal/handler"
 	"xinde/internal/handler/account"
+	"xinde/internal/handler/attachment"
 	"xinde/internal/handler/company"
 	"xinde/internal/handler/price"
 	"xinde/internal/middleware/auth"
@@ -31,10 +32,10 @@ func InitRouter() (*gin.Engine, error) {
 	if err != nil {
 		return nil, fmt.Errorf("初始化PriceController失败: %w", err)
 	}
-	//attachmentCtrl, err := attachment.NewAttachmentController()
-	//if err != nil {
-	//	return nil, fmt.Errorf("初始化AttachmentController失败: %w", err)
-	//}
+	attachmentCtrl, err := attachment.NewAttachmentController()
+	if err != nil {
+		return nil, fmt.Errorf("初始化AttachmentController失败: %w", err)
+	}
 
 	// API v1 routes
 	apiV1 := router.Group("/api/v1")
@@ -82,7 +83,7 @@ func InitRouter() (*gin.Engine, error) {
 
 			attachmentGroup := adminGroup.Group("/attachment")
 			{
-				attachmentGroup.GET("/list")
+				attachmentGroup.GET("/list", attachmentCtrl.List)
 			}
 		}
 

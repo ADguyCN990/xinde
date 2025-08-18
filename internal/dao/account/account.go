@@ -121,6 +121,7 @@ func (d *Dao) FindUserListWithPagination(tx *gorm.DB, page, pageSize, status int
 	offset := (page - 1) * pageSize
 	err := tx.
 		Model(&account.User{}).
+		Order("t_user.uid asc").
 		Select("t_user.*, t_company.price_level").
 		Joins("LEFT JOIN t_company ON t_user.company_id = t_company.id").
 		Where("t_user.is_user = ?", status).

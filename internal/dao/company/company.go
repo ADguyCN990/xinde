@@ -86,7 +86,7 @@ func (d *Dao) FindCompanyListWithPagination(tx *gorm.DB, page, pageSize int) ([]
 
 	var companies []*model.Company
 	offset := (page - 1) * pageSize
-	err := tx.Model(&model.Company{}).
+	err := tx.Model(&model.Company{}).Order("id asc").
 		Limit(pageSize).Offset(offset).
 		Find(&companies).Error
 	if err != nil {
