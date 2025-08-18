@@ -5,6 +5,7 @@ go 1.23.3
 require (
 	github.com/gin-gonic/gin v1.10.1
 	github.com/golang-jwt/jwt/v5 v5.3.0
+	github.com/google/uuid v1.6.0
 	github.com/spf13/viper v1.20.1
 	github.com/swaggo/files v1.0.1
 	github.com/swaggo/gin-swagger v1.6.0
@@ -12,6 +13,7 @@ require (
 	github.com/xuri/excelize/v2 v2.9.1
 	go.uber.org/zap v1.27.0
 	golang.org/x/crypto v0.41.0
+	golang.org/x/net v0.43.0
 	gorm.io/driver/mysql v1.6.0
 	gorm.io/gorm v1.30.1
 )
@@ -62,7 +64,6 @@ require (
 	go.uber.org/multierr v1.11.0 // indirect
 	golang.org/x/arch v0.20.0 // indirect
 	golang.org/x/mod v0.27.0 // indirect
-	golang.org/x/net v0.43.0 // indirect
 	golang.org/x/sync v0.16.0 // indirect
 	golang.org/x/sys v0.35.0 // indirect
 	golang.org/x/text v0.28.0 // indirect

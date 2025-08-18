@@ -2,6 +2,7 @@ package price
 
 import (
 	"fmt"
+	"xinde/internal/dao/attachment"
 	"xinde/internal/dao/price"
 	dto "xinde/internal/dto/price"
 	model "xinde/internal/model/price"
@@ -10,8 +11,9 @@ import (
 )
 
 type Service struct {
-	dao *price.Dao
-	jwt *jwt.JWTService
+	dao           *price.Dao
+	jwt           *jwt.JWTService
+	attachmentDao *attachment.Dao
 }
 
 func NewPriceService() (*Service, error) {
@@ -20,9 +22,14 @@ func NewPriceService() (*Service, error) {
 		return nil, fmt.Errorf("创建Dao实例失败: %v", err)
 	}
 	jwtService := jwt.NewJWTService()
+	attachmentDao, err := attachment.NewAttachmentDao()
+	if err != nil {
+		return nil, fmt.Errorf("创建Dao实例失败: %v", err)
+	}
 	return &Service{
-		dao: dao,
-		jwt: jwtService,
+		dao:           dao,
+		jwt:           jwtService,
+		attachmentDao: attachmentDao,
 	}, nil
 }
 

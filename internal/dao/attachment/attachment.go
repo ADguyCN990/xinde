@@ -4,7 +4,9 @@ import (
 	"fmt"
 	"gorm.io/gorm"
 	"xinde/internal/dao/common"
+	model "xinde/internal/model/attachment"
 	"xinde/internal/store"
+	"xinde/pkg/stderr"
 )
 
 type Dao struct {
@@ -27,4 +29,21 @@ func NewAttachmentDao() (*Dao, error) {
 		db:        db,
 		commonDao: commonDao,
 	}, nil
+}
+
+// DB 返回原始的 gorm.DB 实例，以便 Service 层可以开启事务
+func (d *Dao) DB() *gorm.DB {
+	return d.db
+}
+
+func (d *Dao) Create(tx *gorm.DB, att *model.Attachment) error {
+	if tx == nil {
+		return fmt.Errorf(stderr.ErrorDbNil)
+	}
+
+	err := tx.Model(&model.Attachment{}).Create(att).Error
+	if err != nil {
+		return fmt.Errorf("创建attachment失败: " + err.Error())
+	}
+	return nil
 }

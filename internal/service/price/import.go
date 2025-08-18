@@ -9,7 +9,10 @@ import (
 	"mime/multipart"
 	"strconv"
 	_ "time"
+	attachmentModel "xinde/internal/model/attachment"
 	model "xinde/internal/model/price"
+	"xinde/pkg/logger"
+	"xinde/pkg/util"
 	_ "xinde/pkg/util"
 )
 
@@ -22,32 +25,29 @@ func (s *Service) ImportPricesFromFile(c *gin.Context, fileHeader *multipart.Fil
 	}
 	defer file.Close()
 
-	//TODO 附件管理
 	// b. 将文件保存到临时位置或直接上传到云存储
-	// 这里我们演示保存到本地 (需要一个配置好的上传目录)
-	// 文件名应该用UUID或时间戳重命名，防止冲突
-	//storagePath := fmt.Sprintf("price_imports/%s_%s", time.Now().Format("20060102150405"), fileHeader.Filename)
-	// saveFile(...) 是一个你需要实现的辅助函数，它将文件流保存到配置的存储路径
-	// if err := saveFile(storagePath, file); err != nil {
-	//	return err
-	// }
+	storagePath, err := util.SaveUploadedFile(fileHeader)
+	if err != nil {
+		return fmt.Errorf("保存上传文件失败: %w", err)
+	}
+
 	// 重置文件读取指针，以便后续解析
 	file.Seek(0, 0)
 
-	// TODO 在t_attachment表中记录这次上传
-	//attachment := &model.Attachment{
-	//	Filename:       fileHeader.Filename,
-	//	StoragePath:    storagePath,
-	//	FileType:       fileHeader.Header.Get("Content-Type"),
-	//	FileSize:       uint64(fileHeader.Size),
-	//	StorageDriver:  "local", // 当前是本地存储
-	//	UploadedByUID:  adminID,
-	//	BusinessType:   util.StringToPointer("price_import"),
-	//}
-	//if err := s.attachmentDao.Create(s.dao.DB(), attachment); err != nil {
-	//	// 即使记录附件失败，也可能选择继续，但最好记录日志
-	//	logger.Error("记录上传附件信息失败", "error", err)
-	//}
+	// 在t_attachment表中记录这次上传
+	attachment := &attachmentModel.Attachment{
+		Filename:      fileHeader.Filename,
+		StoragePath:   storagePath,
+		FileType:      fileHeader.Header.Get("Content-Type"),
+		FileSize:      uint64(fileHeader.Size),
+		StorageDriver: "local",
+		UploadedByUID: adminID,
+		BusinessType:  util.StringToPointer("price_import"),
+	}
+	if err := s.attachmentDao.Create(s.attachmentDao.DB(), attachment); err != nil {
+		// 记录日志，但通常不因为这个失败而中断主流程
+		logger.Error("记录上传附件信息到数据库失败: " + err.Error())
+	}
 
 	// --- 2. 解析Excel ---
 	xlsx, err := excelize.OpenReader(file)
