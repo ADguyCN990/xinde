@@ -84,6 +84,7 @@ func InitRouter() (*gin.Engine, error) {
 			attachmentGroup := adminGroup.Group("/attachment")
 			{
 				attachmentGroup.GET("/list", attachmentCtrl.List)
+				attachmentGroup.GET("/download/:id", attachmentCtrl.Download)
 			}
 		}
 

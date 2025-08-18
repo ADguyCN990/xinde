@@ -38,6 +38,12 @@ const (
 	ErrorCompanyIDInvalid = "无效的公司ID格式"
 )
 
+// attachment
+const (
+	ErrorAttachmentNotFound  = "附件不存在"
+	ErrorAttachmentIDInvalid = "无效的附件ID格式"
+)
+
 // JWT token
 const (
 	ErrorTokenExpired     = "token已过期"

@@ -42,6 +42,19 @@ func (d *Dao) DB() *gorm.DB {
 	return d.db
 }
 
+func (d *Dao) GetAttachmentByID(tx *gorm.DB, id uint) (*model.Attachment, error) {
+	if tx == nil {
+		return nil, fmt.Errorf(stderr.ErrorDbNil)
+	}
+
+	var attachment model.Attachment
+	err := tx.Model(&model.Attachment{}).Where("id = ?", id).First(&attachment).Error
+	if err != nil {
+		return nil, err
+	}
+	return &attachment, nil
+}
+
 func (d *Dao) CountWithParams(tx *gorm.DB, params *ListParams) (int64, error) {
 	if tx == nil {
 		return 0, fmt.Errorf(stderr.ErrorDbNil)

@@ -860,6 +860,47 @@ paths:
       summary: 获取附件列表
       tags:
       - Attachment
+  /api/v1/admin/attachments/{id}/download:
+    get:
+      description: 根据附件ID下载对应的文件
+      parameters:
+      - description: 附件 ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/octet-stream
+      responses:
+        "200":
+          description: 文件流
+          schema:
+            type: file
+        "400":
+          description: 请求参数错误
+          schema:
+            $ref: '#/definitions/xinde_pkg_response.Response'
+        "401":
+          description: Token错误
+          schema:
+            $ref: '#/definitions/xinde_pkg_response.Response'
+        "403":
+          description: 没有管理员权限
+          schema:
+            $ref: '#/definitions/xinde_pkg_response.Response'
+        "404":
+          description: 附件或文件不存在
+          schema:
+            $ref: '#/definitions/xinde_pkg_response.Response'
+        "500":
+          description: 服务器内部错误
+          schema:
+            $ref: '#/definitions/xinde_pkg_response.Response'
+      security:
+      - ApiKeyAuth: []
+      summary: 下载附件
+      tags:
+      - Attachment
   /api/v1/admin/company/list:
     get:
       consumes:
