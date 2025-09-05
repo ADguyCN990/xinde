@@ -85,6 +85,7 @@ func InitRouter() (*gin.Engine, error) {
 			{
 				attachmentGroup.GET("/list", attachmentCtrl.List)
 				attachmentGroup.GET("/download/:id", attachmentCtrl.Download)
+				attachmentGroup.GET("/scan/invalid", attachmentCtrl.ScanInvalid)
 			}
 		}
 

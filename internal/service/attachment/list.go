@@ -18,13 +18,13 @@ type Service struct {
 
 func NewAttachmentService() (*Service, error) {
 	jwtService := jwt.NewJWTService()
-	dao, err := attachment.NewAttachmentDao()
+	d, err := attachment.NewAttachmentDao()
 	if err != nil {
 		return nil, fmt.Errorf("创建Dao实例失败: " + err.Error())
 	}
 	return &Service{
 		jwt: jwtService,
-		dao: dao,
+		dao: d,
 	}, nil
 }
 
