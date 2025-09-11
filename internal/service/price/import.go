@@ -55,7 +55,12 @@ func (s *Service) ImportPricesFromFile(c *gin.Context, fileHeader *multipart.Fil
 		return fmt.Errorf("读取Excel文件失败: %w", err)
 	}
 	// 获取工作表中的所有行
-	rows, err := xlsx.GetRows("Sheet1") // 假设数据在 "Sheet1"
+	sheetList := xlsx.GetSheetList()
+	if len(sheetList) == 0 {
+		return fmt.Errorf("excel文件中没有任何工作表")
+	}
+	firstSheetName := sheetList[0]
+	rows, err := xlsx.GetRows(firstSheetName) // 假设数据在 "Sheet1"
 	if err != nil {
 		return fmt.Errorf("获取 Sheet1 数据失败: %w", err)
 	}
