@@ -609,6 +609,52 @@ const docTemplate = `{
                 }
             }
         },
+        "/api/v1/admin/attachment/scan/invalid": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "扫描并返回数据库与磁盘文件不一致的记录",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Attachment"
+                ],
+                "summary": "扫描异常附件",
+                "responses": {
+                    "200": {
+                        "description": "成功返回扫描结果",
+                        "schema": {
+                            "$ref": "#/definitions/xinde_internal_dto_attachment.ScanInvalidResp"
+                        }
+                    },
+                    "401": {
+                        "description": "Token错误",
+                        "schema": {
+                            "$ref": "#/definitions/xinde_pkg_response.Response"
+                        }
+                    },
+                    "403": {
+                        "description": "没有管理员权限",
+                        "schema": {
+                            "$ref": "#/definitions/xinde_pkg_response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "服务器内部错误",
+                        "schema": {
+                            "$ref": "#/definitions/xinde_pkg_response.Response"
+                        }
+                    }
+                }
+            }
+        },
         "/api/v1/admin/attachment/{id}": {
             "delete": {
                 "security": [
@@ -1455,6 +1501,65 @@ const docTemplate = `{
                 },
                 "data": {
                     "$ref": "#/definitions/xinde_internal_dto_attachment.ListPageData"
+                },
+                "message": {
+                    "type": "string",
+                    "example": "操作成功"
+                },
+                "success": {
+                    "type": "boolean",
+                    "example": true
+                }
+            }
+        },
+        "xinde_internal_dto_attachment.OrphanData": {
+            "type": "object",
+            "properties": {
+                "orphan_files": {
+                    "description": "数据库没有，磁盘有",
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "orphan_records": {
+                    "description": "数据库有，磁盘没有",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/xinde_internal_dto_attachment.OrphanRecord"
+                    }
+                }
+            }
+        },
+        "xinde_internal_dto_attachment.OrphanRecord": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "string"
+                },
+                "filename": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "storage_path": {
+                    "type": "string"
+                },
+                "uploaded_by": {
+                    "type": "string"
+                }
+            }
+        },
+        "xinde_internal_dto_attachment.ScanInvalidResp": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer",
+                    "example": 200
+                },
+                "data": {
+                    "$ref": "#/definitions/xinde_internal_dto_attachment.OrphanData"
                 },
                 "message": {
                     "type": "string",

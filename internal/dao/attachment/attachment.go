@@ -84,6 +84,22 @@ func (d *Dao) CountWithParams(tx *gorm.DB, params *ListParams) (int64, error) {
 	return count, nil
 }
 
+func (d *Dao) GetAllAttachments(tx *gorm.DB) ([]*model.Attachment, error) {
+	if tx == nil {
+		return nil, fmt.Errorf(stderr.ErrorDbNil)
+	}
+	var list []*model.Attachment
+	err := tx.Model(&model.Attachment{}).
+		Select("t_attachment.*, t_user.name as uploader_name").
+		Joins("LEFT JOIN t_user ON t_user.uid = t_attachment.uploaded_by_uid").
+		Order("t_attachment.id asc").
+		Find(&list).Error
+	if err != nil {
+		return nil, fmt.Errorf("获取所有附件记录失败: " + err.Error())
+	}
+	return list, nil
+}
+
 func (d *Dao) FindAttachmentListWithPagination(tx *gorm.DB, params *ListParams) ([]*model.Attachment, error) {
 	if tx == nil {
 		return nil, fmt.Errorf(stderr.ErrorDbNil)

@@ -8,6 +8,9 @@
 *.so
 *.dylib
 *.xlsx
+*.png
+*.jpg
+*.jpeg
 
 # Test binary, built with `go test -c`
 *.test

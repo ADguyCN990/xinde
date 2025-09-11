@@ -325,6 +325,46 @@ definitions:
         example: true
         type: boolean
     type: object
+  xinde_internal_dto_attachment.OrphanData:
+    properties:
+      orphan_files:
+        description: 数据库没有，磁盘有
+        items:
+          type: string
+        type: array
+      orphan_records:
+        description: 数据库有，磁盘没有
+        items:
+          $ref: '#/definitions/xinde_internal_dto_attachment.OrphanRecord'
+        type: array
+    type: object
+  xinde_internal_dto_attachment.OrphanRecord:
+    properties:
+      created_at:
+        type: string
+      filename:
+        type: string
+      id:
+        type: integer
+      storage_path:
+        type: string
+      uploaded_by:
+        type: string
+    type: object
+  xinde_internal_dto_attachment.ScanInvalidResp:
+    properties:
+      code:
+        example: 200
+        type: integer
+      data:
+        $ref: '#/definitions/xinde_internal_dto_attachment.OrphanData'
+      message:
+        example: 操作成功
+        type: string
+      success:
+        example: true
+        type: boolean
+    type: object
   xinde_internal_dto_company.ListData:
     properties:
       address:
@@ -901,6 +941,35 @@ paths:
       security:
       - ApiKeyAuth: []
       summary: 获取附件列表
+      tags:
+      - Attachment
+  /api/v1/admin/attachment/scan/invalid:
+    get:
+      consumes:
+      - application/json
+      description: 扫描并返回数据库与磁盘文件不一致的记录
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 成功返回扫描结果
+          schema:
+            $ref: '#/definitions/xinde_internal_dto_attachment.ScanInvalidResp'
+        "401":
+          description: Token错误
+          schema:
+            $ref: '#/definitions/xinde_pkg_response.Response'
+        "403":
+          description: 没有管理员权限
+          schema:
+            $ref: '#/definitions/xinde_pkg_response.Response'
+        "500":
+          description: 服务器内部错误
+          schema:
+            $ref: '#/definitions/xinde_pkg_response.Response'
+      security:
+      - ApiKeyAuth: []
+      summary: 扫描异常附件
       tags:
       - Attachment
   /api/v1/admin/attachments/{id}/download:

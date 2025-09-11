@@ -10,7 +10,7 @@ type OrphanRecord struct {
 
 type OrphanData struct {
 	OrphanRecords []*OrphanRecord `json:"orphan_records"` //数据库有，磁盘没有
-	OrphanFiles   string          `json:"orphan_files"`   //数据库没有，磁盘有
+	OrphanFiles   []string        `json:"orphan_files"`   //数据库没有，磁盘有
 }
 
 type ScanInvalidResp struct {
