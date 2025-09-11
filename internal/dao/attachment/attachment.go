@@ -55,6 +55,20 @@ func (d *Dao) GetAttachmentByID(tx *gorm.DB, id uint) (*model.Attachment, error)
 	return &attachment, nil
 }
 
+func (d *Dao) DeleteAttachmentByID(tx *gorm.DB, id uint) error {
+	if tx == nil {
+		return fmt.Errorf(stderr.ErrorDbNil)
+	}
+	result := tx.Delete(&model.Attachment{}, id)
+	if result.Error != nil {
+		return result.Error
+	}
+	if result.RowsAffected == 0 {
+		return fmt.Errorf(stderr.ErrorAttachmentNotFound)
+	}
+	return nil
+}
+
 func (d *Dao) CountWithParams(tx *gorm.DB, params *ListParams) (int64, error) {
 	if tx == nil {
 		return 0, fmt.Errorf(stderr.ErrorDbNil)

@@ -3,11 +3,9 @@ package attachment
 import (
 	"errors"
 	"fmt"
-	"github.com/spf13/viper"
 	"gorm.io/gorm"
 	"io"
 	"os"
-	"path/filepath"
 	"xinde/pkg/stderr"
 )
 
@@ -26,11 +24,10 @@ func (s *Service) GetAttachmentForDownload(id uint) (string, string, io.ReadClos
 	switch attachment.StorageDriver {
 	case "local":
 		// 构建文件的存储路径
-		savePath := viper.GetString("attachment.save_path")
-		if savePath == "" {
-			return "", "", nil, fmt.Errorf("save_path未配置")
+		absolutePath, err := s.getAbsolutePath(attachment)
+		if err != nil {
+			return "", "", nil, err
 		}
-		absolutePath := filepath.Join(savePath, attachment.StoragePath)
 
 		// 打开文件
 		file, err := os.Open(absolutePath)

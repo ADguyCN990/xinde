@@ -609,6 +609,73 @@ const docTemplate = `{
                 }
             }
         },
+        "/api/v1/admin/attachment/{id}": {
+            "delete": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "根据附件ID删除对应的文件和数据库记录",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Attachment"
+                ],
+                "summary": "删除附件",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "附件 ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "删除成功",
+                        "schema": {
+                            "$ref": "#/definitions/xinde_pkg_response.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "请求参数错误",
+                        "schema": {
+                            "$ref": "#/definitions/xinde_pkg_response.Response"
+                        }
+                    },
+                    "401": {
+                        "description": "Token错误",
+                        "schema": {
+                            "$ref": "#/definitions/xinde_pkg_response.Response"
+                        }
+                    },
+                    "403": {
+                        "description": "没有管理员权限",
+                        "schema": {
+                            "$ref": "#/definitions/xinde_pkg_response.Response"
+                        }
+                    },
+                    "404": {
+                        "description": "附件不存在",
+                        "schema": {
+                            "$ref": "#/definitions/xinde_pkg_response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "服务器内部错误",
+                        "schema": {
+                            "$ref": "#/definitions/xinde_pkg_response.Response"
+                        }
+                    }
+                }
+            }
+        },
         "/api/v1/admin/attachments/{id}/download": {
             "get": {
                 "security": [
