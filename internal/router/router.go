@@ -87,6 +87,7 @@ func InitRouter() (*gin.Engine, error) {
 				attachmentGroup.GET("/download/:id", attachmentCtrl.Download)
 				attachmentGroup.DELETE("/:id", attachmentCtrl.Delete)
 				attachmentGroup.GET("/scan/invalid", attachmentCtrl.ScanInvalid)
+				attachmentGroup.POST("/fix/orphan", attachmentCtrl.FixOrphan)
 			}
 		}
 

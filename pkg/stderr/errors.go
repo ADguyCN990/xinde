@@ -40,8 +40,9 @@ const (
 
 // attachment
 const (
-	ErrorAttachmentNotFound  = "附件不存在"
-	ErrorAttachmentIDInvalid = "无效的附件ID格式"
+	ErrorAttachmentNotFound       = "附件不存在"
+	ErrorAttachmentIDInvalid      = "无效的附件ID格式"
+	ErrorAttachmentNotFoundOnDesk = "附件不存在于磁盘上"
 )
 
 // JWT token
