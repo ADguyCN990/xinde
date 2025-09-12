@@ -3,6 +3,7 @@ package router
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
+	"github.com/spf13/viper"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 	"xinde/internal/handler"
@@ -16,6 +17,10 @@ import (
 
 func InitRouter() (*gin.Engine, error) {
 	router := gin.Default()
+
+	uploadUrlPrefix := viper.GetString("attachment.upload_url_prefix") // -> "/static/uploads"
+	savePath := viper.GetString("attachment.save_path")                // -> "uploads"
+	router.Static(uploadUrlPrefix, savePath)
 
 	// Swagger
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
@@ -97,6 +102,7 @@ func InitRouter() (*gin.Engine, error) {
 			groupGroup := adminGroup.Group("/group")
 			{
 				groupGroup.POST("/create", groupCtrl.Create)
+				groupGroup.GET("/tree", groupCtrl.GetTree)
 			}
 		}
 

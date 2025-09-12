@@ -48,3 +48,14 @@ func (d *Dao) Create(tx *gorm.DB, groupName string, parentID uint) (uint, error)
 
 	return g.ID, nil
 }
+
+func (d *Dao) GetAll(tx *gorm.DB) ([]*model.Group, error) {
+	if tx == nil {
+		return nil, fmt.Errorf(stderr.ErrorDbNil)
+	}
+	var groups []*model.Group
+	if err := tx.Model(&model.Group{}).Order("id asc").Find(&groups).Error; err != nil {
+		return nil, fmt.Errorf("Dao层查找所有分组失败: " + err.Error())
+	}
+	return groups, nil
+}

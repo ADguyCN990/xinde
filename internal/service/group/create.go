@@ -7,7 +7,6 @@ import (
 	"mime/multipart"
 	"xinde/internal/dao/attachment"
 	"xinde/internal/dao/group"
-	dto "xinde/internal/dto/group"
 	model "xinde/internal/model/attachment"
 	"xinde/pkg/jwt"
 	"xinde/pkg/logger"
@@ -37,10 +36,10 @@ func NewGroupService() (*Service, error) {
 	}, nil
 }
 
-func (s *Service) Create(req *dto.CreateReq, adminID uint, iconFile *multipart.FileHeader) error {
+func (s *Service) Create(name string, parentID uint, adminID uint, iconFile *multipart.FileHeader) error {
 	return s.dao.DB().Transaction(func(tx *gorm.DB) error {
 		// 创建分组的数据库记录
-		id, err := s.dao.Create(tx, req.Name, req.ParentID)
+		id, err := s.dao.Create(tx, name, parentID)
 		if err != nil {
 			return err
 		}

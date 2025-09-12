@@ -55,6 +55,18 @@ func (d *Dao) GetAttachmentByID(tx *gorm.DB, id uint) (*model.Attachment, error)
 	return &attachment, nil
 }
 
+func (d *Dao) GetAttachmentsByBusinessType(tx *gorm.DB, businessType string) ([]*model.Attachment, error) {
+	if tx == nil {
+		return nil, fmt.Errorf(stderr.ErrorDbNil)
+	}
+	var attachments []*model.Attachment
+	err := tx.Model(&model.Attachment{}).Where("business_type = ?", businessType).Find(&attachments).Error
+	if err != nil {
+		return nil, err
+	}
+	return attachments, nil
+}
+
 func (d *Dao) DeleteAttachmentByID(tx *gorm.DB, id uint) error {
 	if tx == nil {
 		return fmt.Errorf(stderr.ErrorDbNil)

@@ -65,7 +65,7 @@ func (ctrl *Controller) Create(c *gin.Context) {
 	}
 
 	// 剩余工作交由Service层处理
-	err = ctrl.Service.Create(&req, adminID, iconFile)
+	err = ctrl.Service.Create(req.Name, req.ParentID, adminID, iconFile)
 	if err != nil {
 		switch err.Error() {
 		default:

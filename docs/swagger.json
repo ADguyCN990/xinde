@@ -979,6 +979,49 @@
                 }
             }
         },
+        "/api/v1/admin/group/tree": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "获取一个完整的、嵌套的树状分组结构",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Group"
+                ],
+                "summary": "获取树状分组列表",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "是否包含图标URL (必填，true或者false)",
+                        "name": "icon",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "成功返回分组树",
+                        "schema": {
+                            "$ref": "#/definitions/xinde_internal_dto_group.TreeResp"
+                        }
+                    },
+                    "500": {
+                        "description": "服务器内部错误",
+                        "schema": {
+                            "$ref": "#/definitions/xinde_pkg_response.Response"
+                        }
+                    }
+                }
+            }
+        },
         "/api/v1/admin/price/list": {
             "get": {
                 "description": "返回所有产品的价格信息",
@@ -1726,6 +1769,51 @@
                         "price_4"
                     ],
                     "example": "price_1或price_2或price_3或price_4"
+                }
+            }
+        },
+        "xinde_internal_dto_group.GroupTreeNode": {
+            "type": "object",
+            "properties": {
+                "children": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/xinde_internal_dto_group.GroupTreeNode"
+                    }
+                },
+                "icon_url": {
+                    "description": "omitempty 可以在不需要时隐藏",
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "parent_id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "xinde_internal_dto_group.TreeResp": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer"
+                },
+                "data": {
+                    "description": "保持为列表，即使只返回 root 节点",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/xinde_internal_dto_group.GroupTreeNode"
+                    }
+                },
+                "message": {
+                    "type": "string"
+                },
+                "success": {
+                    "type": "boolean"
                 }
             }
         },
