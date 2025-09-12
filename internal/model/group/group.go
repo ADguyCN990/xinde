@@ -15,3 +15,7 @@ type Group struct {
 	UpdatedAt time.Time              `gorm:"column:updated_at"`
 	DeletedAt gorm.DeletedAt         `gorm:"index;column:deleted_at"`
 }
+
+func (Group) TableName() string {
+	return "t_group"
+}

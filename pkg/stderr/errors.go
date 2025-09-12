@@ -51,6 +51,7 @@ const (
 	ErrorTokenNotValidYet = "token尚未生效"
 	ErrorTokenMalFormed   = "token格式错误"
 	ErrorTokenInvalid     = "token解析失败"
+	ErrorTokenNotAdmin    = "非管理员,权限不足"
 )
 
 // MsgFlags 预定义的业务错误msg

@@ -1095,6 +1095,54 @@ paths:
       summary: 修改价格等级
       tags:
       - Company
+  /api/v1/admin/group/create:
+    post:
+      consumes:
+      - multipart/form-data
+      description: 创建一个新分组，可选择性上传图标
+      parameters:
+      - description: 分组名称
+        in: formData
+        name: name
+        required: true
+        type: string
+      - description: 父级分组ID
+        in: formData
+        name: parent_id
+        required: true
+        type: integer
+      - description: 分组图标 (可选)
+        in: formData
+        name: icon
+        type: file
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 创建成功
+          schema:
+            $ref: '#/definitions/xinde_pkg_response.Response'
+        "400":
+          description: 请求参数错误
+          schema:
+            $ref: '#/definitions/xinde_pkg_response.Response'
+        "401":
+          description: Token错误
+          schema:
+            $ref: '#/definitions/xinde_pkg_response.Response'
+        "403":
+          description: 没有管理员权限
+          schema:
+            $ref: '#/definitions/xinde_pkg_response.Response'
+        "500":
+          description: 服务器内部错误
+          schema:
+            $ref: '#/definitions/xinde_pkg_response.Response'
+      security:
+      - ApiKeyAuth: []
+      summary: 创建新分组
+      tags:
+      - Group
   /api/v1/admin/price/list:
     get:
       consumes:
