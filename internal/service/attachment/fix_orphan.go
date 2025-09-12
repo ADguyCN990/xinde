@@ -32,7 +32,7 @@ func (s *Service) FixOrphan(adminID uint, filePath string, action string) error 
 	switch action {
 	case "sync":
 		// 在数据库中追加一条对应的记录
-		fileType := "异常文件，暂不支持该字段"
+		fileType := "application/octet-stream"
 		businessType := util.StringToPointer("synced_from_orphan")
 		attachment := &model.Attachment{
 			Filename:      fileInfo.Name(),
