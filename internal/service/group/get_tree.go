@@ -1,8 +1,6 @@
 package group
 
 import (
-	"fmt"
-	"github.com/spf13/viper"
 	dto "xinde/internal/dto/group"
 )
 
@@ -16,15 +14,9 @@ func (s *Service) GetTree(includedIcon string) ([]*dto.GroupTreeNode, error) {
 	// 如果需要图标，还要获取所有分组对应的图标映射
 	iconMap := make(map[uint]string)
 	if includedIcon == "true" {
-		baseURL := viper.GetString("server.base_url")
-		uploadUrlPrefix := viper.GetString("attachment.upload_url_prefix")
-		businessType := viper.GetString("business_type.group_icon")
-		icons, err := s.attachmentDao.GetAttachmentsByBusinessType(tx, businessType)
+		iconMap, err = s.GetIconMap()
 		if err != nil {
 			return nil, err
-		}
-		for _, icon := range icons {
-			iconMap[icon.BusinessID] = fmt.Sprintf("%s%s/%s", baseURL, uploadUrlPrefix, icon.StoragePath)
 		}
 	}
 

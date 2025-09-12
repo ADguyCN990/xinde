@@ -429,6 +429,31 @@ definitions:
     required:
     - price_level
     type: object
+  xinde_internal_dto_group.BackendListData:
+    properties:
+      created_at:
+        example: "2020-09-08 09:09:09"
+        type: string
+      icon_url:
+        example: 图片url
+        type: string
+      id:
+        example: 2
+        type: integer
+      level:
+        description: 【新增】层级字段
+        example: 1
+        type: integer
+      name:
+        example: 钢件加工
+        type: string
+      parent_id:
+        example: 1
+        type: integer
+      parent_name:
+        example: root
+        type: string
+    type: object
   xinde_internal_dto_group.GroupTreeNode:
     properties:
       children:
@@ -444,6 +469,39 @@ definitions:
         type: string
       parent_id:
         type: integer
+    type: object
+  xinde_internal_dto_group.ListPageData:
+    properties:
+      list:
+        items:
+          $ref: '#/definitions/xinde_internal_dto_group.BackendListData'
+        type: array
+      page:
+        example: 1
+        type: integer
+      pageSize:
+        example: 20
+        type: integer
+      pages:
+        example: 7
+        type: integer
+      total:
+        example: 137
+        type: integer
+    type: object
+  xinde_internal_dto_group.ListResp:
+    properties:
+      code:
+        example: 200
+        type: integer
+      data:
+        $ref: '#/definitions/xinde_internal_dto_group.ListPageData'
+      message:
+        example: 操作成功
+        type: string
+      success:
+        example: true
+        type: boolean
     type: object
   xinde_internal_dto_group.TreeResp:
     properties:
@@ -1171,6 +1229,40 @@ paths:
       security:
       - ApiKeyAuth: []
       summary: 创建新分组
+      tags:
+      - Group
+  /api/v1/admin/group/list:
+    get:
+      consumes:
+      - application/json
+      description: 获取一个扁平化、带分页的分组列表，用于后台管理
+      parameters:
+      - description: '页码 (默认: 1)'
+        in: query
+        name: page
+        type: integer
+      - description: '每页数量 (默认: from config)'
+        in: query
+        name: page_size
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 成功返回分组列表
+          schema:
+            $ref: '#/definitions/xinde_internal_dto_group.ListResp'
+        "400":
+          description: 请求参数错误
+          schema:
+            $ref: '#/definitions/xinde_pkg_response.Response'
+        "500":
+          description: 服务器内部错误
+          schema:
+            $ref: '#/definitions/xinde_pkg_response.Response'
+      security:
+      - ApiKeyAuth: []
+      summary: 获取后台分组列表
       tags:
       - Group
   /api/v1/admin/group/tree:

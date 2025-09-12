@@ -985,6 +985,60 @@ const docTemplate = `{
                 }
             }
         },
+        "/api/v1/admin/group/list": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "获取一个扁平化、带分页的分组列表，用于后台管理",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Group"
+                ],
+                "summary": "获取后台分组列表",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "页码 (默认: 1)",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "每页数量 (默认: from config)",
+                        "name": "page_size",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "成功返回分组列表",
+                        "schema": {
+                            "$ref": "#/definitions/xinde_internal_dto_group.ListResp"
+                        }
+                    },
+                    "400": {
+                        "description": "请求参数错误",
+                        "schema": {
+                            "$ref": "#/definitions/xinde_pkg_response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "服务器内部错误",
+                        "schema": {
+                            "$ref": "#/definitions/xinde_pkg_response.Response"
+                        }
+                    }
+                }
+            }
+        },
         "/api/v1/admin/group/tree": {
             "get": {
                 "security": [
@@ -1778,6 +1832,40 @@ const docTemplate = `{
                 }
             }
         },
+        "xinde_internal_dto_group.BackendListData": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "string",
+                    "example": "2020-09-08 09:09:09"
+                },
+                "icon_url": {
+                    "type": "string",
+                    "example": "图片url"
+                },
+                "id": {
+                    "type": "integer",
+                    "example": 2
+                },
+                "level": {
+                    "description": "【新增】层级字段",
+                    "type": "integer",
+                    "example": 1
+                },
+                "name": {
+                    "type": "string",
+                    "example": "钢件加工"
+                },
+                "parent_id": {
+                    "type": "integer",
+                    "example": 1
+                },
+                "parent_name": {
+                    "type": "string",
+                    "example": "root"
+                }
+            }
+        },
         "xinde_internal_dto_group.GroupTreeNode": {
             "type": "object",
             "properties": {
@@ -1799,6 +1887,53 @@ const docTemplate = `{
                 },
                 "parent_id": {
                     "type": "integer"
+                }
+            }
+        },
+        "xinde_internal_dto_group.ListPageData": {
+            "type": "object",
+            "properties": {
+                "list": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/xinde_internal_dto_group.BackendListData"
+                    }
+                },
+                "page": {
+                    "type": "integer",
+                    "example": 1
+                },
+                "pageSize": {
+                    "type": "integer",
+                    "example": 20
+                },
+                "pages": {
+                    "type": "integer",
+                    "example": 7
+                },
+                "total": {
+                    "type": "integer",
+                    "example": 137
+                }
+            }
+        },
+        "xinde_internal_dto_group.ListResp": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer",
+                    "example": 200
+                },
+                "data": {
+                    "$ref": "#/definitions/xinde_internal_dto_group.ListPageData"
+                },
+                "message": {
+                    "type": "string",
+                    "example": "操作成功"
+                },
+                "success": {
+                    "type": "boolean",
+                    "example": true
                 }
             }
         },

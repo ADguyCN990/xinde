@@ -103,6 +103,7 @@ func InitRouter() (*gin.Engine, error) {
 			{
 				groupGroup.POST("/create", groupCtrl.Create)
 				groupGroup.GET("/tree", groupCtrl.GetTree)
+				groupGroup.GET("/list", groupCtrl.List)
 			}
 		}
 
