@@ -9,6 +9,7 @@ import (
 	"xinde/internal/handler/account"
 	"xinde/internal/handler/attachment"
 	"xinde/internal/handler/company"
+	"xinde/internal/handler/group"
 	"xinde/internal/handler/price"
 	"xinde/internal/middleware/auth"
 )
@@ -36,7 +37,10 @@ func InitRouter() (*gin.Engine, error) {
 	if err != nil {
 		return nil, fmt.Errorf("初始化AttachmentController失败: %w", err)
 	}
-
+	groupCtrl, err := group.NewGroupController()
+	if err != nil {
+		return nil, fmt.Errorf("初始化GroupController失败: %w", err)
+	}
 	// API v1 routes
 	apiV1 := router.Group("/api/v1")
 	{
@@ -88,6 +92,11 @@ func InitRouter() (*gin.Engine, error) {
 				attachmentGroup.DELETE("/:id", attachmentCtrl.Delete)
 				attachmentGroup.GET("/scan/invalid", attachmentCtrl.ScanInvalid)
 				attachmentGroup.POST("/fix/orphan", attachmentCtrl.FixOrphan)
+			}
+
+			groupGroup := adminGroup.Group("/group")
+			{
+				groupGroup.POST("/create", groupCtrl.Create)
 			}
 		}
 
