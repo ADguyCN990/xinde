@@ -50,7 +50,7 @@ func (s *Service) GetGroupList(page, pageSize int) (*dto.ListPageData, error) {
 	}
 
 	// 通过切片手动截取分页数据
-	start := (page - 1) * pageSize
+	start := (currentPage - 1) * pageSize
 	end := start + pageSize
 	if end > count {
 		end = count
