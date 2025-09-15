@@ -105,6 +105,7 @@ func InitRouter() (*gin.Engine, error) {
 				groupGroup.GET("/tree", groupCtrl.GetTree)
 				groupGroup.GET("/list", groupCtrl.List)
 				groupGroup.PUT("/update/:id", groupCtrl.Update)
+				groupGroup.DELETE("/delete/:id", groupCtrl.Delete)
 			}
 		}
 

@@ -50,6 +50,7 @@ const (
 	ErrorGroupNotFound             = "分组不存在"
 	ErrorGroupIDInvalid            = "无效的分组ID格式"
 	ErrorCannotMoveGroupIntoItself = "所更改的父级分组不能是其子孙分组"
+	ErrorRootGroupCannotBeDeleted  = "root分组不能被删除"
 )
 
 // JWT token

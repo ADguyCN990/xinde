@@ -79,6 +79,18 @@ func (d *Dao) GetAttachmentByBusinessType(tx *gorm.DB, businessType string, id u
 	return attachment, nil
 }
 
+func (d *Dao) GetAttachmentsByBusinessAndID(tx *gorm.DB, businessType string, id uint) ([]*model.Attachment, error) {
+	if tx == nil {
+		return nil, fmt.Errorf(stderr.ErrorDbNil)
+	}
+	var attachments []*model.Attachment
+	err := tx.Model(&model.Attachment{}).Where("business_type = ? AND business_id = ?", businessType, id).Find(&attachments).Error
+	if err != nil {
+		return nil, fmt.Errorf("Dao层查询失败, 无法根据业务类型和业务ID获取附件列表: " + err.Error())
+	}
+	return attachments, nil
+}
+
 func (d *Dao) DeleteAttachmentByID(tx *gorm.DB, id uint) error {
 	if tx == nil {
 		return fmt.Errorf(stderr.ErrorDbNil)
@@ -89,6 +101,17 @@ func (d *Dao) DeleteAttachmentByID(tx *gorm.DB, id uint) error {
 	}
 	if result.RowsAffected == 0 {
 		return fmt.Errorf(stderr.ErrorAttachmentNotFound)
+	}
+	return nil
+}
+
+func (d *Dao) DeleteAttachmentByBusiness(tx *gorm.DB, businessType string, id uint) error {
+	if tx == nil {
+		return fmt.Errorf(stderr.ErrorDbNil)
+	}
+	err := tx.Delete(&model.Attachment{}, "business_type = ? AND id = ?", businessType, id).Error
+	if err != nil {
+		return fmt.Errorf("无法根据业务类型删除附件: " + err.Error())
 	}
 	return nil
 }

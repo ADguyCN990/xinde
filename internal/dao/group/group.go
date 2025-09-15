@@ -108,3 +108,16 @@ func (d *Dao) FindAllDescendantIDs(tx *gorm.DB, groupID uint) ([]uint, error) {
 
 	return descendantIDs, nil
 }
+
+func (d *Dao) DeleteGroupsByIDs(tx *gorm.DB, groupIDs []uint) error {
+	if tx == nil {
+		return fmt.Errorf(stderr.ErrorDbNil)
+	}
+	if len(groupIDs) == 0 {
+		return nil
+	}
+	if err := tx.Delete(&model.Group{}, groupIDs).Error; err != nil {
+		return fmt.Errorf("删除分组失败: " + err.Error())
+	}
+	return nil
+}
