@@ -45,20 +45,9 @@ func (s *Service) Delete(groupID uint) error {
 		// ------------------------------------------------------------------
 
 		// 处理这些分组关联的图标
-		var icons []uint
 		businessType := viper.GetString("business_type.group_icon")
-		for _, id := range idList {
-			icon, err := s.attachmentDao.GetAttachmentByBusinessType(tx, businessType, id)
-			if err != nil {
-				return err
-			}
-			icons = append(icons, icon.ID)
-		}
-		for _, icon := range icons {
-			err := s.attachmentDao.DeleteAttachmentByID(tx, icon)
-			if err != nil {
-				return err
-			}
+		if err := s.attachmentDao.DeleteAttachmentsByBusinessTypeAndIDs(tx, businessType, idList); err != nil {
+			return fmt.Errorf("批量删除关联的附件记录失败: %w", err)
 		}
 
 		// 删除分组

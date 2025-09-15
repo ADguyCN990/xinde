@@ -105,14 +105,22 @@ func (d *Dao) DeleteAttachmentByID(tx *gorm.DB, id uint) error {
 	return nil
 }
 
-func (d *Dao) DeleteAttachmentByBusiness(tx *gorm.DB, businessType string, id uint) error {
+// DeleteAttachmentsByBusinessTypeAndIDs deletes all attachments matching a business type and a list of business IDs.
+func (d *Dao) DeleteAttachmentsByBusinessTypeAndIDs(tx *gorm.DB, bizType string, bizIDs []uint) error {
 	if tx == nil {
 		return fmt.Errorf(stderr.ErrorDbNil)
 	}
-	err := tx.Delete(&model.Attachment{}, "business_type = ? AND id = ?", businessType, id).Error
-	if err != nil {
-		return fmt.Errorf("无法根据业务类型删除附件: " + err.Error())
+	if len(bizIDs) == 0 {
+		return nil // 如果没有ID，无需操作
 	}
+
+	// 使用 Where(...).Delete(...) 执行批量删除
+	err := tx.Delete(&model.Attachment{}, "business_type = ? AND business_id IN ?", bizType, bizIDs).Error
+
+	if err != nil {
+		return fmt.Errorf("Dao层根据业务类型和业务ID批量删除附件列表失败:" + err.Error())
+	}
+
 	return nil
 }
 
