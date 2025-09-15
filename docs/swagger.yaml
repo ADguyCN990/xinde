@@ -1292,6 +1292,53 @@ paths:
       summary: 获取树状分组列表
       tags:
       - Group
+  /api/v1/admin/group/update/{id}:
+    put:
+      consumes:
+      - multipart/form-data
+      description: 根据ID更新一个分组的名称、父级或图标
+      parameters:
+      - description: 分组 ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: 新的分组名称
+        in: formData
+        name: name
+        type: string
+      - description: 新的父级分组ID
+        in: formData
+        name: parent_id
+        type: integer
+      - description: 新的分组图标 (可选)
+        in: formData
+        name: icon
+        type: file
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 更新成功
+          schema:
+            $ref: '#/definitions/xinde_pkg_response.Response'
+        "400":
+          description: 请求参数错误或无效ID
+          schema:
+            $ref: '#/definitions/xinde_pkg_response.Response'
+        "404":
+          description: 分组不存在
+          schema:
+            $ref: '#/definitions/xinde_pkg_response.Response'
+        "500":
+          description: 服务器内部错误
+          schema:
+            $ref: '#/definitions/xinde_pkg_response.Response'
+      security:
+      - ApiKeyAuth: []
+      summary: 更新分组信息
+      tags:
+      - Group
   /api/v1/admin/price/list:
     get:
       consumes:
