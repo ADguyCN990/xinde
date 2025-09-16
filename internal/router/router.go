@@ -10,6 +10,7 @@ import (
 	"xinde/internal/handler/account"
 	"xinde/internal/handler/attachment"
 	"xinde/internal/handler/company"
+	"xinde/internal/handler/device"
 	"xinde/internal/handler/group"
 	"xinde/internal/handler/price"
 	"xinde/internal/middleware/auth"
@@ -45,6 +46,10 @@ func InitRouter() (*gin.Engine, error) {
 	groupCtrl, err := group.NewGroupController()
 	if err != nil {
 		return nil, fmt.Errorf("初始化GroupController失败: %w", err)
+	}
+	deviceCtrl, err := device.NewDeviceController()
+	if err != nil {
+		return nil, fmt.Errorf("初始化DeviceController失败: %w", err)
 	}
 	// API v1 routes
 	apiV1 := router.Group("/api/v1")
@@ -106,6 +111,11 @@ func InitRouter() (*gin.Engine, error) {
 				groupGroup.GET("/list", groupCtrl.List)
 				groupGroup.PUT("/update/:id", groupCtrl.Update)
 				groupGroup.DELETE("/delete/:id", groupCtrl.Delete)
+			}
+
+			deviceGroup := adminGroup.Group("/device")
+			{
+				deviceGroup.POST("/create", deviceGroup.Import)
 			}
 		}
 
