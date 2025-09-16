@@ -8,11 +8,11 @@ import (
 )
 
 type Device struct {
-	ID        uint           `gorm:"primaryKey;column:id"`
-	Name      string         `gorm:"type:varchar(255);column:name;not null;comment:方案名称"`
-	GroupID   uint           `gorm:"index;column:group_id;not null;comment:所属分组ID"`
-	Details   datatypes.JSON `gorm:"type:jsonb;column:details;not null;comment:方案的动态详情(jsonb)"`
-	CreatedAt time.Time      `gorm:"column:created_at"`
-	UpdatedAt time.Time      `gorm:"column:updated_at"`
-	DeletedAt gorm.DeletedAt `gorm:"index;column:deleted_at"`
+	ID           uint           `gorm:"primaryKey;column:id"`
+	Name         string         `gorm:"type:varchar(255);column:name;not null;comment:方案名称"`
+	DeviceTypeID uint           `gorm:"index;column:device_type_id;not null"`
+	Details      datatypes.JSON `gorm:"type:jsonb;column:details;not null;comment:方案的动态详情(jsonb)"`
+	CreatedAt    time.Time      `gorm:"column:created_at"`
+	UpdatedAt    time.Time      `gorm:"column:updated_at"`
+	DeletedAt    gorm.DeletedAt `gorm:"index;column:deleted_at"`
 }
