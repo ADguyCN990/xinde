@@ -39,6 +39,22 @@ services:
       # GIN_MODE: release # 部署时可以设为 release
       # 设置容器时区为东八区，这样 Go 的 time.Now() 默认就是东八区时间
       TZ: "Asia/Shanghai"
+    # 【新增】PostgreSQL 服务
+  postgres:
+    image: postgres:15 # 使用一个较新的、稳定的版本
+    container_name: xinde-postgres
+    restart: always
+    environment:
+      POSTGRES_DB: phpxxxd_pg # 建议用一个新名字，以示区分
+      POSTGRES_USER: phpsql
+      POSTGRES_PASSWORD: bserp
+      TZ: "UTC"
+    ports:
+      - "5432:5432" # PostgreSQL 默认端口是 5432
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
 
+# ... (你已有的 volumes: 定义)
 volumes:
   mysql-data:
+  postgres-data: # 【新增】为 PostgreSQL 创建一个新的持久化卷

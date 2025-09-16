@@ -55,6 +55,9 @@ func main() {
 	if err := store.InitDB(); err != nil {
 		logger.Fatal("Failed to initialize database", zap.Error(err))
 	}
+	if err := store.InitPDB(); err != nil {
+		logger.Fatal("Failed to initialize postgres database", zap.Error(err))
+	}
 	logger.Info("数据库连接成功")
 
 	// 5. 初始化路由
