@@ -429,6 +429,60 @@ definitions:
     required:
     - price_level
     type: object
+  xinde_internal_dto_device.ListData:
+    properties:
+      created_at:
+        type: string
+      group_name:
+        description: 分组名称
+        type: string
+      id:
+        type: integer
+      image_url:
+        description: 设备图片
+        type: string
+      name:
+        description: 设备类型名称
+        type: string
+      solution_count:
+        description: 条目数 (方案数量)
+        type: integer
+      updated_at:
+        type: string
+    type: object
+  xinde_internal_dto_device.ListPageData:
+    properties:
+      list:
+        items:
+          $ref: '#/definitions/xinde_internal_dto_device.ListData'
+        type: array
+      page:
+        example: 1
+        type: integer
+      pageSize:
+        example: 20
+        type: integer
+      pages:
+        example: 7
+        type: integer
+      total:
+        example: 137
+        type: integer
+    type: object
+  xinde_internal_dto_device.ListResp:
+    properties:
+      code:
+        example: 200
+        type: integer
+      data:
+        $ref: '#/definitions/xinde_internal_dto_device.ListPageData'
+      message:
+        example: 操作成功
+        type: string
+      success:
+        example: true
+        type: boolean
+    type: object
   xinde_internal_dto_group.BackendListData:
     properties:
       created_at:
@@ -1194,9 +1248,19 @@ paths:
         name: group_id
         required: true
         type: integer
+      - description: 设备的名称
+        in: formData
+        name: name
+        required: true
+        type: string
       - description: 包含设备数据的Excel文件
         in: formData
-        name: excel
+        name: device
+        required: true
+        type: file
+      - description: 设备的主图
+        in: formData
+        name: image
         required: true
         type: file
       produces:
@@ -1217,6 +1281,80 @@ paths:
       security:
       - ApiKeyAuth: []
       summary: 从Excel导入设备
+      tags:
+      - Device
+  /api/v1/admin/device/import/{id}:
+    put:
+      consumes:
+      - multipart/form-data
+      description: 为一个已存在的设备类型上传新的Excel文件，覆盖其下所有方案
+      parameters:
+      - description: 设备类型 ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: 包含新设备方案的Excel文件
+        in: formData
+        name: device
+        required: true
+        type: file
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 更新导入成功
+          schema:
+            $ref: '#/definitions/xinde_pkg_response.Response'
+        "400":
+          description: 请求参数错误或无效ID
+          schema:
+            $ref: '#/definitions/xinde_pkg_response.Response'
+        "404":
+          description: 设备类型不存在
+          schema:
+            $ref: '#/definitions/xinde_pkg_response.Response'
+        "500":
+          description: 服务器内部错误或导入失败
+          schema:
+            $ref: '#/definitions/xinde_pkg_response.Response'
+      security:
+      - ApiKeyAuth: []
+      summary: 更新导入设备方案
+      tags:
+      - Device
+  /api/v1/admin/device/list:
+    get:
+      consumes:
+      - application/json
+      description: 分页获取设备类型列表，用于后台管理
+      parameters:
+      - description: '页码 (默认: 1)'
+        in: query
+        name: page
+        type: integer
+      - description: '每页数量 (默认: from config)'
+        in: query
+        name: page_size
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 成功返回列表
+          schema:
+            $ref: '#/definitions/xinde_internal_dto_device.ListResp'
+        "400":
+          description: 请求参数错误
+          schema:
+            $ref: '#/definitions/xinde_pkg_response.Response'
+        "500":
+          description: 服务器内部错误
+          schema:
+            $ref: '#/definitions/xinde_pkg_response.Response'
+      security:
+      - ApiKeyAuth: []
+      summary: 获取设备类型列表
       tags:
       - Device
   /api/v1/admin/group/create:

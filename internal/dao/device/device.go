@@ -1,6 +1,7 @@
 package device
 
 import (
+	"errors"
 	"fmt"
 	"gorm.io/gorm"
 	"xinde/internal/dao/common"
@@ -88,7 +89,7 @@ func (d *Dao) FindOrCreateDeviceType(tx *gorm.DB, name string, groupID uint) (*m
 	if tx == nil {
 		return nil, fmt.Errorf(stderr.ErrorDbNil)
 	}
-	var dt model.DeviceType
+	var dt *model.DeviceType
 	// FirstOrCreate 会查找，如果找不到，就用给定的结构体创建
 	if err := tx.Where("name = ? AND group_id = ?", name, groupID).FirstOrCreate(&dt, model.DeviceType{
 		Name:    name,
@@ -96,7 +97,22 @@ func (d *Dao) FindOrCreateDeviceType(tx *gorm.DB, name string, groupID uint) (*m
 	}).Error; err != nil {
 		return nil, fmt.Errorf("查找或创建设备类型失败: " + err.Error())
 	}
-	return &dt, nil
+	return dt, nil
+}
+
+func (d *Dao) GetDeviceTypeByID(tx *gorm.DB, id uint) (*model.DeviceType, error) {
+	if tx == nil {
+		return nil, fmt.Errorf(stderr.ErrorDbNil)
+	}
+	var dt *model.DeviceType
+	if err := tx.Model(&model.DeviceType{}).Where("id = ?", id).First(&dt).Error; err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, err
+		} else {
+			return nil, fmt.Errorf("Dao层根据ID查找设备类型失败" + err.Error())
+		}
+	}
+	return dt, nil
 }
 
 func (d *Dao) DeleteByDeviceTypeID(tx *gorm.DB, deviceTypeID uint) error {

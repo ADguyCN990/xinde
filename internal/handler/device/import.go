@@ -31,7 +31,9 @@ func NewDeviceController() (*Controller, error) {
 // @Accept       multipart/form-data
 // @Produce      json
 // @Param        group_id formData int true "目标分组ID"
-// @Param        excel formData file true "包含设备数据的Excel文件"
+// @Param        name formData string true "设备的名称"
+// @Param        device formData file true "包含设备数据的Excel文件"
+// @Param        image formData file true "设备的主图"
 // @Security     ApiKeyAuth
 // @Success      200 {object} response.Response "导入成功，并返回导入数量"
 // @Failure      400 {object} response.Response "请求参数错误"
@@ -72,7 +74,7 @@ func (ctrl *Controller) Import(c *gin.Context) {
 		switch err.Error() {
 		default:
 			response.Error(c, http.StatusInternalServerError, response.CodeInternalError, stderr.ErrorInternalServerError)
-			logger.Error("/admin/device/import 价格导入发生错误: " + err.Error())
+			logger.Error("/admin/device/import 设备导入发生错误: " + err.Error())
 		}
 		return
 	}

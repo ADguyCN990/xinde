@@ -53,6 +53,12 @@ const (
 	ErrorRootGroupCannotBeDeleted  = "root分组不能被删除"
 )
 
+// device
+const (
+	ErrorDeviceNotFound  = "设备类型不存在"
+	ErrorDeviceIDInvalid = "无效的设备类型ID格式"
+)
+
 // JWT token
 const (
 	ErrorTokenExpired     = "token已过期"
