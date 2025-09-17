@@ -6,7 +6,7 @@ CREATE TABLE "t_device" (
   "details" jsonb NOT NULL,
   "created_at" timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
   "updated_at" timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  "deleted_at" timestamptz,
+  "deleted_at" timestamptz DEFAULT NULL,
   PRIMARY KEY ("id")
 );
 

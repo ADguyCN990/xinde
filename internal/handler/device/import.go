@@ -9,6 +9,7 @@ import (
 	"xinde/internal/service/device"
 	"xinde/pkg/logger"
 	"xinde/pkg/response"
+	"xinde/pkg/stderr"
 )
 
 type Controller struct {
@@ -66,5 +67,14 @@ func (ctrl *Controller) Import(c *gin.Context) {
 	}
 
 	// 将剩余的工作交由service处理
-	ctrl.service.ImportFromExcel(adminID, req.GroupID, req.DeviceTypeName, excelFile, imageFile)
+	err = ctrl.service.ImportFromExcel(adminID, req.GroupID, req.DeviceTypeName, excelFile, imageFile)
+	if err != nil {
+		switch err.Error() {
+		default:
+			response.Error(c, http.StatusInternalServerError, response.CodeInternalError, stderr.ErrorInternalServerError)
+			logger.Error("/admin/device/import 价格导入发生错误: " + err.Error())
+		}
+		return
+	}
+	response.Success(c, nil)
 }

@@ -16,3 +16,8 @@ type Device struct {
 	UpdatedAt    time.Time      `gorm:"column:updated_at"`
 	DeletedAt    gorm.DeletedAt `gorm:"index;column:deleted_at"`
 }
+
+// TableName 指定 Device 结构体对应的数据库表名
+func (Device) TableName() string {
+	return "t_device"
+}

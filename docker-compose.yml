@@ -28,6 +28,7 @@ services:
     # depends_on 确保数据库服务先于应用服务启动
     depends_on:
       - db
+      - postgres
     # 卷挂载
     volumes:
       # 将你本机的配置文件挂载到容器内部

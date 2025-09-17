@@ -5,7 +5,7 @@ CREATE TABLE "t_device_type" (
   -- 这个表的 attachment business_type 可以是 'device_type_main_image'
   "created_at" timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
   "updated_at" timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  "deleted_at" timestamptz,
+  "deleted_at" timestamptz DEFAULT NULL,
   PRIMARY KEY ("id"),
   UNIQUE("name", "group_id") -- 同一分组下设备类型名称唯一
 );
