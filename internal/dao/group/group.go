@@ -60,6 +60,17 @@ func (d *Dao) GetGroupByID(tx *gorm.DB, groupID uint) (*model.Group, error) {
 	return group, nil
 }
 
+func (d *Dao) GetGroupsByIDs(tx *gorm.DB, groupIDs []uint) ([]*model.Group, error) {
+	if tx == nil {
+		return nil, fmt.Errorf(stderr.ErrorDbNil)
+	}
+	var groups []*model.Group
+	if err := tx.Model(&model.Group{}).Where("id IN (?)", groupIDs).Find(&groups).Error; err != nil {
+		return nil, fmt.Errorf("Dao层根据ID列表查找分组失败: " + err.Error())
+	}
+	return groups, nil
+}
+
 func (d *Dao) UpdateGroupByID(tx *gorm.DB, groupID uint, updateData map[string]interface{}) error {
 	if tx == nil {
 		return fmt.Errorf(stderr.ErrorDbNil)

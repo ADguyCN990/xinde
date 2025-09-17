@@ -91,6 +91,18 @@ func (d *Dao) GetAttachmentsByBusinessAndID(tx *gorm.DB, businessType string, id
 	return attachments, nil
 }
 
+func (d *Dao) GetAttachmentsByBusinessAndIDs(tx *gorm.DB, businessType string, ids []uint) ([]*model.Attachment, error) {
+	if tx == nil {
+		return nil, fmt.Errorf(stderr.ErrorDbNil)
+	}
+	var attachments []*model.Attachment
+	err := tx.Model(&model.Attachment{}).Where("business_type = ? AND business_id IN (?)", businessType, ids).Find(&attachments).Error
+	if err != nil {
+		return nil, fmt.Errorf("Dao层查询失败，无法根据业务类型和业务ID列表获取附件列表: " + err.Error())
+	}
+	return attachments, nil
+}
+
 func (d *Dao) DeleteAttachmentByID(tx *gorm.DB, id uint) error {
 	if tx == nil {
 		return fmt.Errorf(stderr.ErrorDbNil)

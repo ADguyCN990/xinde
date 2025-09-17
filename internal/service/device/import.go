@@ -10,6 +10,7 @@ import (
 	"strings"
 	"xinde/internal/dao/attachment"
 	"xinde/internal/dao/device"
+	"xinde/internal/dao/group"
 	dto "xinde/internal/dto/device"
 	model "xinde/internal/model/attachment"
 	deviceModel "xinde/internal/model/device"
@@ -21,6 +22,7 @@ type Service struct {
 	dao           *device.Dao
 	j             *jwt.JWTService
 	attachmentDao *attachment.Dao
+	groupDao      *group.Dao
 }
 
 func NewDeviceService() (*Service, error) {
@@ -32,11 +34,16 @@ func NewDeviceService() (*Service, error) {
 	if err != nil {
 		return nil, fmt.Errorf("创建Dao实例失败: " + err.Error())
 	}
+	groupDao, err := group.NewGroupDao()
+	if err != nil {
+		return nil, fmt.Errorf("创建Dao实例失败: " + err.Error())
+	}
 	j := jwt.NewJWTService()
 	return &Service{
 		dao:           dao,
 		j:             j,
 		attachmentDao: attachmentDao,
+		groupDao:      groupDao,
 	}, nil
 }
 

@@ -116,6 +116,7 @@ func InitRouter() (*gin.Engine, error) {
 			deviceGroup := adminGroup.Group("/device")
 			{
 				deviceGroup.POST("/import", deviceCtrl.Import)
+				deviceGroup.GET("/list", deviceCtrl.List)
 			}
 		}
 

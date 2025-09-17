@@ -56,6 +56,33 @@ func (d *Dao) BatchCreateDevice(tx *gorm.DB, devs []*model.Device) error {
 	return nil
 }
 
+// CountDeviceTypes 查找DeviceType数量
+func (d *Dao) CountDeviceTypes(tx *gorm.DB) (int64, error) {
+	if tx == nil {
+		return 0, fmt.Errorf(stderr.ErrorDbNil)
+	}
+	var count int64
+	err := tx.Model(&model.DeviceType{}).Count(&count).Error
+	if err != nil {
+		return 0, fmt.Errorf("Dao层查找DeviceType数量失败: " + err.Error())
+	}
+	return count, nil
+}
+
+// CountSolutionsWithDeviceTypeID 根据DeviceTypeID查找设备方案数量
+func (d *Dao) CountSolutionsWithDeviceTypeID(tx *gorm.DB, deviceTypeID string) (int64, error) {
+	if tx == nil {
+		return 0, fmt.Errorf(stderr.ErrorDbNil)
+	}
+	var count int64
+	queryBuilder := tx.Model(&model.Device{}).Where("t_device.device_type_id = ?", deviceTypeID)
+	err := queryBuilder.Count(&count).Error
+	if err != nil {
+		return 0, fmt.Errorf("Dao层根据deviceTypeID查找设备方案数量失败: " + err.Error())
+	}
+	return count, nil
+}
+
 // FindOrCreateDeviceType 查找或创建一个设备类型
 func (d *Dao) FindOrCreateDeviceType(tx *gorm.DB, name string, groupID uint) (*model.DeviceType, error) {
 	if tx == nil {
@@ -81,4 +108,31 @@ func (d *Dao) DeleteByDeviceTypeID(tx *gorm.DB, deviceTypeID uint) error {
 		return fmt.Errorf("Dao层根据DeviceTypeID删除设备失败: " + err.Error())
 	}
 	return nil
+}
+
+// RawDeviceType is a temporary struct to hold the result of the complex query.
+type RawDeviceType struct {
+	model.DeviceType
+	SolutionCount int64 `gorm:"column:solution_count"`
+}
+
+func (d *Dao) GetDeviceTypeListPage(tx *gorm.DB, page, pageSize int) (int64, []*RawDeviceType, error) {
+	var total int64
+	var list []*RawDeviceType
+	// 使用子查询来计算每个 device_type 的 solution 数量
+	query := tx.Model(&model.DeviceType{}).
+		Select("t_device_type.*, (SELECT count(*) FROM t_device WHERE t_device.device_type_id = t_device_type.id AND t_device.deleted_at IS NULL) as solution_count")
+
+	// 1. 先计算总数
+	if err := query.Count(&total).Error; err != nil {
+		return 0, nil, fmt.Errorf("分页查询DeviceType失败: " + err.Error())
+	}
+
+	// 2. 再获取分页数据
+	offset := (page - 1) * pageSize
+	if err := query.Order("id desc").Limit(pageSize).Offset(offset).Find(&list).Error; err != nil {
+		return 0, nil, fmt.Errorf("分页查询DeviceType失败: " + err.Error())
+	}
+
+	return total, list, nil
 }
