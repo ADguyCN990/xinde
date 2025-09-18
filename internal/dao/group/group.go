@@ -1,6 +1,7 @@
 package group
 
 import (
+	"errors"
 	"fmt"
 	"gorm.io/gorm"
 	"xinde/internal/dao/common"
@@ -55,6 +56,9 @@ func (d *Dao) GetGroupByID(tx *gorm.DB, groupID uint) (*model.Group, error) {
 	}
 	var group *model.Group
 	if err := tx.Model(&model.Group{}).Where("id = ?", groupID).First(&group).Error; err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, err
+		}
 		return nil, fmt.Errorf("Dao层根据ID查找分组失败: " + err.Error())
 	}
 	return group, nil

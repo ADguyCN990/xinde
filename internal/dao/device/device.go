@@ -152,3 +152,13 @@ func (d *Dao) GetDeviceTypeListPage(tx *gorm.DB, page, pageSize int) (int64, []*
 
 	return total, list, nil
 }
+
+func (d *Dao) UpdateDeviceType(tx *gorm.DB, id uint, updateData map[string]interface{}) error {
+	if tx == nil {
+		return fmt.Errorf(stderr.ErrorDbNil)
+	}
+	if err := tx.Model(&model.DeviceType{}).Where("id = ?", id).Updates(updateData).Error; err != nil {
+		return fmt.Errorf("更新分组类型字段失败: " + err.Error())
+	}
+	return nil
+}

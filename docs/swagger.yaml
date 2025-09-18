@@ -429,6 +429,15 @@ definitions:
     required:
     - price_level
     type: object
+  xinde_internal_dto_device.ChangeGroupReq:
+    properties:
+      new_group_id:
+        example: 1
+        minimum: 1
+        type: integer
+    required:
+    - new_group_id
+    type: object
   xinde_internal_dto_device.ListData:
     properties:
       created_at:
@@ -1631,6 +1640,47 @@ paths:
       summary: 导入价格Excel文件
       tags:
       - Price
+  /api/v1/admin/update/group/{id}:
+    patch:
+      consumes:
+      - application/json
+      description: 将一个设备类型移动到另一个指定的分组下
+      parameters:
+      - description: 设备类型 ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: 包含新分组ID的请求体
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/xinde_internal_dto_device.ChangeGroupReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 更换成功
+          schema:
+            $ref: '#/definitions/xinde_pkg_response.Response'
+        "400":
+          description: 请求参数错误或无效ID
+          schema:
+            $ref: '#/definitions/xinde_pkg_response.Response'
+        "404":
+          description: 设备类型或目标分组不存在
+          schema:
+            $ref: '#/definitions/xinde_pkg_response.Response'
+        "500":
+          description: 服务器内部错误
+          schema:
+            $ref: '#/definitions/xinde_pkg_response.Response'
+      security:
+      - ApiKeyAuth: []
+      summary: 更换设备类型的分组
+      tags:
+      - Device
   /ping:
     get:
       consumes:

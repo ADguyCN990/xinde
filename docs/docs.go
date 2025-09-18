@@ -1524,6 +1524,70 @@ const docTemplate = `{
                 }
             }
         },
+        "/api/v1/admin/update/group/{id}": {
+            "patch": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "将一个设备类型移动到另一个指定的分组下",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Device"
+                ],
+                "summary": "更换设备类型的分组",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "设备类型 ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "包含新分组ID的请求体",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/xinde_internal_dto_device.ChangeGroupReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "更换成功",
+                        "schema": {
+                            "$ref": "#/definitions/xinde_pkg_response.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "请求参数错误或无效ID",
+                        "schema": {
+                            "$ref": "#/definitions/xinde_pkg_response.Response"
+                        }
+                    },
+                    "404": {
+                        "description": "设备类型或目标分组不存在",
+                        "schema": {
+                            "$ref": "#/definitions/xinde_pkg_response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "服务器内部错误",
+                        "schema": {
+                            "$ref": "#/definitions/xinde_pkg_response.Response"
+                        }
+                    }
+                }
+            }
+        },
         "/ping": {
             "get": {
                 "description": "do ping",
@@ -2149,6 +2213,19 @@ const docTemplate = `{
                         "price_4"
                     ],
                     "example": "price_1或price_2或price_3或price_4"
+                }
+            }
+        },
+        "xinde_internal_dto_device.ChangeGroupReq": {
+            "type": "object",
+            "required": [
+                "new_group_id"
+            ],
+            "properties": {
+                "new_group_id": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "example": 1
                 }
             }
         },
