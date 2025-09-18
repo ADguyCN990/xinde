@@ -126,6 +126,17 @@ func (d *Dao) DeleteByDeviceTypeID(tx *gorm.DB, deviceTypeID uint) error {
 	return nil
 }
 
+func (d *Dao) DeleteDeviceTypeByID(tx *gorm.DB, id uint) error {
+	if tx == nil {
+		return fmt.Errorf(stderr.ErrorDbNil)
+	}
+	err := tx.Delete(&model.DeviceType{}, "id = ?", id).Error
+	if err != nil {
+		return fmt.Errorf("Dao层根据DeviceTypeID删除设备失败: " + err.Error())
+	}
+	return nil
+}
+
 // RawDeviceType is a temporary struct to hold the result of the complex query.
 type RawDeviceType struct {
 	model.DeviceType

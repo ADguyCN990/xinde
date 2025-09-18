@@ -121,6 +121,7 @@ func InitRouter() (*gin.Engine, error) {
 				deviceGroup.PATCH("/update/group/:id", deviceCtrl.UpdateGroup)
 				deviceGroup.PATCH("/update/name/:id", deviceCtrl.UpdateName)
 				deviceGroup.POST("/update/image/:id", deviceCtrl.UpdateImage)
+				deviceGroup.DELETE("/delete/:id", deviceCtrl.Delete)
 			}
 		}
 

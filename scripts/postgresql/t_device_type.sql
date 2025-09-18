@@ -6,8 +6,7 @@ CREATE TABLE "t_device_type" (
   "created_at" timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
   "updated_at" timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
   "deleted_at" timestamptz DEFAULT NULL,
-  PRIMARY KEY ("id"),
-  UNIQUE("name", "group_id") -- 同一分组下设备类型名称唯一
+  PRIMARY KEY ("id")
 );
 -- 添加注释
 COMMENT ON COLUMN "t_device_type"."name" IS '设备类型名称 (e.g., U钻)';
