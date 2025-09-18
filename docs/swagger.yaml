@@ -1730,6 +1730,46 @@ paths:
       summary: 更换设备类型的分组
       tags:
       - Device
+  /api/v1/admin/update/image/{id}:
+    post:
+      consumes:
+      - multipart/form-data
+      description: 为一个已存在的设备类型上传新的主图，替换旧图
+      parameters:
+      - description: 设备类型 ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: 新的设备主图
+        in: formData
+        name: image
+        required: true
+        type: file
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 修改成功
+          schema:
+            $ref: '#/definitions/xinde_pkg_response.Response'
+        "400":
+          description: 请求参数错误或无效ID
+          schema:
+            $ref: '#/definitions/xinde_pkg_response.Response'
+        "404":
+          description: 设备类型不存在
+          schema:
+            $ref: '#/definitions/xinde_pkg_response.Response'
+        "500":
+          description: 服务器内部错误
+          schema:
+            $ref: '#/definitions/xinde_pkg_response.Response'
+      security:
+      - ApiKeyAuth: []
+      summary: 修改设备类型图片
+      tags:
+      - Device
   /ping:
     get:
       consumes:

@@ -120,6 +120,7 @@ func InitRouter() (*gin.Engine, error) {
 				deviceGroup.PUT("/import/:id", deviceCtrl.UpdateImport)
 				deviceGroup.PATCH("/update/group/:id", deviceCtrl.UpdateGroup)
 				deviceGroup.PATCH("/update/name/:id", deviceCtrl.UpdateName)
+				deviceGroup.POST("/update/image/:id", deviceCtrl.UpdateImage)
 			}
 		}
 
