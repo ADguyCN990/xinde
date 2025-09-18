@@ -6,5 +6,5 @@ package device
 
 // ChangeGroupReq 定义了更换分组时的请求体
 type ChangeGroupReq struct {
-	GroupID uint `json:"new_group_id" form:"group_id" binding:"required,min=1" example:"1"`
+	GroupID uint `json:"group_id" form:"group_id" binding:"required,min=1" example:"1"`
 }

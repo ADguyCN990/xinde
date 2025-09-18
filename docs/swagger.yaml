@@ -431,12 +431,20 @@ definitions:
     type: object
   xinde_internal_dto_device.ChangeGroupReq:
     properties:
-      new_group_id:
+      group_id:
         example: 1
         minimum: 1
         type: integer
     required:
-    - new_group_id
+    - group_id
+    type: object
+  xinde_internal_dto_device.ChangeNameReq:
+    properties:
+      name:
+        example: 车削刀杆
+        type: string
+    required:
+    - name
     type: object
   xinde_internal_dto_device.ListData:
     properties:
@@ -1364,6 +1372,47 @@ paths:
       security:
       - ApiKeyAuth: []
       summary: 获取设备类型列表
+      tags:
+      - Device
+  /api/v1/admin/device/update/name/{id}:
+    patch:
+      consumes:
+      - application/json
+      description: 更新一个设备类型的名称
+      parameters:
+      - description: 设备类型 ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: 包含新名称的请求体
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/xinde_internal_dto_device.ChangeNameReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 更换成功
+          schema:
+            $ref: '#/definitions/xinde_pkg_response.Response'
+        "400":
+          description: 请求参数错误或无效ID
+          schema:
+            $ref: '#/definitions/xinde_pkg_response.Response'
+        "404":
+          description: 设备类型不存在
+          schema:
+            $ref: '#/definitions/xinde_pkg_response.Response'
+        "500":
+          description: 服务器内部错误
+          schema:
+            $ref: '#/definitions/xinde_pkg_response.Response'
+      security:
+      - ApiKeyAuth: []
+      summary: 更换设备类型的名称
       tags:
       - Device
   /api/v1/admin/group/create:
