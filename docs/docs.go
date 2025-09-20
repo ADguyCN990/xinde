@@ -1366,9 +1366,9 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Device"
+                    "group"
                 ],
-                "summary": "获取设备类型列表",
+                "summary": "根据分组获取设备类型列表",
                 "parameters": [
                     {
                         "type": "integer",

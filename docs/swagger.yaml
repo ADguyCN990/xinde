@@ -1598,9 +1598,9 @@ paths:
             $ref: '#/definitions/xinde_pkg_response.Response'
       security:
       - ApiKeyAuth: []
-      summary: 获取设备类型列表
+      summary: 根据分组获取设备类型列表
       tags:
-      - Device
+      - group
   /api/v1/admin/group/list:
     get:
       consumes:

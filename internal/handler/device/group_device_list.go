@@ -11,9 +11,9 @@ import (
 )
 
 // GroupDeviceList handles fetching a list of device types.
-// @Summary      获取设备类型列表
+// @Summary      根据分组获取设备类型列表
 // @Description  分页获取设备类型列表，用于前台展示
-// @Tags         Device
+// @Tags         group
 // @Accept       json
 // @Produce      json
 // @Param        id   path      int  true  "设备类型 ID"
