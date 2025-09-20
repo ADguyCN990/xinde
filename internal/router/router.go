@@ -111,6 +111,7 @@ func InitRouter() (*gin.Engine, error) {
 				groupGroup.GET("/list", groupCtrl.List)
 				groupGroup.PUT("/update/:id", groupCtrl.Update)
 				groupGroup.DELETE("/delete/:id", groupCtrl.Delete)
+				groupGroup.GET("/device/list/:id", deviceCtrl.GroupDeviceList)
 			}
 
 			deviceGroup := adminGroup.Group("/device")

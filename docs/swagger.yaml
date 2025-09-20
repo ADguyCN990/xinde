@@ -446,6 +446,35 @@ definitions:
     required:
     - name
     type: object
+  xinde_internal_dto_device.GroupDeviceListData:
+    properties:
+      device_id:
+        example: 1
+        type: integer
+      group_name:
+        type: string
+      image_url:
+        type: string
+      name:
+        example: 刀柄
+        type: string
+    type: object
+  xinde_internal_dto_device.GroupDeviceListResp:
+    properties:
+      code:
+        example: 200
+        type: integer
+      data:
+        items:
+          $ref: '#/definitions/xinde_internal_dto_device.GroupDeviceListData'
+        type: array
+      message:
+        example: 操作成功
+        type: string
+      success:
+        example: true
+        type: boolean
+    type: object
   xinde_internal_dto_device.ListData:
     properties:
       created_at:
@@ -1537,6 +1566,41 @@ paths:
       summary: 删除分组
       tags:
       - Group
+  /api/v1/admin/group/device/list:
+    get:
+      consumes:
+      - application/json
+      description: 分页获取设备类型列表，用于前台展示
+      parameters:
+      - description: 设备类型 ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 成功返回列表
+          schema:
+            $ref: '#/definitions/xinde_internal_dto_device.GroupDeviceListResp'
+        "400":
+          description: 请求参数错误
+          schema:
+            $ref: '#/definitions/xinde_pkg_response.Response'
+        "404":
+          description: 分组不存在
+          schema:
+            $ref: '#/definitions/xinde_pkg_response.Response'
+        "500":
+          description: 服务器内部错误
+          schema:
+            $ref: '#/definitions/xinde_pkg_response.Response'
+      security:
+      - ApiKeyAuth: []
+      summary: 获取设备类型列表
+      tags:
+      - Device
   /api/v1/admin/group/list:
     get:
       consumes:

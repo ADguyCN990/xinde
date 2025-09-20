@@ -1351,6 +1351,61 @@ const docTemplate = `{
                 }
             }
         },
+        "/api/v1/admin/group/device/list": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "分页获取设备类型列表，用于前台展示",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Device"
+                ],
+                "summary": "获取设备类型列表",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "设备类型 ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "成功返回列表",
+                        "schema": {
+                            "$ref": "#/definitions/xinde_internal_dto_device.GroupDeviceListResp"
+                        }
+                    },
+                    "400": {
+                        "description": "请求参数错误",
+                        "schema": {
+                            "$ref": "#/definitions/xinde_pkg_response.Response"
+                        }
+                    },
+                    "404": {
+                        "description": "分组不存在",
+                        "schema": {
+                            "$ref": "#/definitions/xinde_pkg_response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "服务器内部错误",
+                        "schema": {
+                            "$ref": "#/definitions/xinde_pkg_response.Response"
+                        }
+                    }
+                }
+            }
+        },
         "/api/v1/admin/group/list": {
             "get": {
                 "security": [
@@ -2419,6 +2474,48 @@ const docTemplate = `{
                 "name": {
                     "type": "string",
                     "example": "车削刀杆"
+                }
+            }
+        },
+        "xinde_internal_dto_device.GroupDeviceListData": {
+            "type": "object",
+            "properties": {
+                "device_id": {
+                    "type": "integer",
+                    "example": 1
+                },
+                "group_name": {
+                    "type": "string"
+                },
+                "image_url": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string",
+                    "example": "刀柄"
+                }
+            }
+        },
+        "xinde_internal_dto_device.GroupDeviceListResp": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer",
+                    "example": 200
+                },
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/xinde_internal_dto_device.GroupDeviceListData"
+                    }
+                },
+                "message": {
+                    "type": "string",
+                    "example": "操作成功"
+                },
+                "success": {
+                    "type": "boolean",
+                    "example": true
                 }
             }
         },

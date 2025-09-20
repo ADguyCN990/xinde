@@ -115,6 +115,21 @@ func (d *Dao) GetDeviceTypeByID(tx *gorm.DB, id uint) (*model.DeviceType, error)
 	return dt, nil
 }
 
+func (d *Dao) GetDeviceTypesByGroupID(tx *gorm.DB, groupID uint) ([]*model.DeviceType, error) {
+	if tx == nil {
+		return nil, fmt.Errorf(stderr.ErrorDbNil)
+	}
+	var dts []*model.DeviceType
+	if err := tx.Model(&model.DeviceType{}).Where("group_id = ?", groupID).Find(&dts).Error; err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, err
+		} else {
+			return nil, fmt.Errorf("Dao层根据GroupID查找设备类型失败: " + err.Error())
+		}
+	}
+	return dts, nil
+}
+
 func (d *Dao) DeleteByDeviceTypeID(tx *gorm.DB, deviceTypeID uint) error {
 	if tx == nil {
 		return fmt.Errorf(stderr.ErrorDbNil)
