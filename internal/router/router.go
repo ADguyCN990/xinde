@@ -128,6 +128,7 @@ func InitRouter() (*gin.Engine, error) {
 			filterImageGroup := adminGroup.Group("/filter_image")
 			{
 				filterImageGroup.POST("/create", deviceCtrl.CreateFilterImage)
+				filterImageGroup.GET("/list", deviceCtrl.FilterImageList)
 			}
 		}
 

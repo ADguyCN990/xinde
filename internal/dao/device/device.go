@@ -189,6 +189,32 @@ func (d *Dao) UpdateDeviceType(tx *gorm.DB, id uint, updateData map[string]inter
 	return nil
 }
 
+func (d *Dao) CountFilterImage(tx *gorm.DB, deviceTypeID uint) (int64, error) {
+	var count int64
+	if tx == nil {
+		return 0, fmt.Errorf(stderr.ErrorDbNil)
+	}
+	err := tx.Model(&model.FilterImage{}).Where("device_type_id = ?", deviceTypeID).Count(&count).Error
+	if err != nil {
+		return 0, fmt.Errorf("统计设备筛选下拉图片总数失败: " + err.Error())
+	}
+	return count, nil
+}
+
+func (d *Dao) GetFilterImagePage(tx *gorm.DB, page, pageSize int, deviceTypeID uint) ([]*model.FilterImage, error) {
+	if tx == nil {
+		return nil, fmt.Errorf(stderr.ErrorDbNil)
+	}
+	var list []*model.FilterImage
+	query := tx.Model(&model.FilterImage{}).Where("device_type_id = ?", deviceTypeID)
+	offset := (page - 1) * pageSize
+	err := query.Order("id desc").Limit(pageSize).Offset(offset).Find(&list).Error
+	if err != nil {
+		return nil, fmt.Errorf("分页查询设备筛选下拉图片失败: " + err.Error())
+	}
+	return list, nil
+}
+
 func (d *Dao) CheckFilterImageExists(tx *gorm.DB, deviceTypeID uint, filterValue string) (bool, uint, error) {
 	if tx == nil {
 		return false, 0, fmt.Errorf(stderr.ErrorDbNil)
