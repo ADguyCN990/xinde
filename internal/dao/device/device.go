@@ -201,6 +201,21 @@ func (d *Dao) CountFilterImage(tx *gorm.DB, deviceTypeID uint) (int64, error) {
 	return count, nil
 }
 
+func (d *Dao) GetFilterImageByID(tx *gorm.DB, id uint) (*model.FilterImage, error) {
+	if tx == nil {
+		return nil, fmt.Errorf(stderr.ErrorDbNil)
+	}
+	var filterImage *model.FilterImage
+	if err := tx.Model(&model.FilterImage{}).Where("id = ?", id).First(&filterImage).Error; err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, err
+		} else {
+			return nil, fmt.Errorf("根据ID查找设备筛选列表下拉图片失败: " + err.Error())
+		}
+	}
+	return filterImage, nil
+}
+
 func (d *Dao) GetFilterImagePage(tx *gorm.DB, page, pageSize int, deviceTypeID uint) ([]*model.FilterImage, error) {
 	if tx == nil {
 		return nil, fmt.Errorf(stderr.ErrorDbNil)

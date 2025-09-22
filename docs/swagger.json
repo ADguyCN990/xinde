@@ -1364,6 +1364,61 @@
                 }
             }
         },
+        "/api/v1/admin/filter_image/{id}": {
+            "delete": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "删除一条筛选条件图片配置及其关联的图片文件",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "FilterImage"
+                ],
+                "summary": "删除筛选条件图片",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "筛选条件图片配置 ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "删除成功",
+                        "schema": {
+                            "$ref": "#/definitions/xinde_pkg_response.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "请求参数错误或无效ID",
+                        "schema": {
+                            "$ref": "#/definitions/xinde_pkg_response.Response"
+                        }
+                    },
+                    "404": {
+                        "description": "配置不存在",
+                        "schema": {
+                            "$ref": "#/definitions/xinde_pkg_response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "服务器内部错误",
+                        "schema": {
+                            "$ref": "#/definitions/xinde_pkg_response.Response"
+                        }
+                    }
+                }
+            }
+        },
         "/api/v1/admin/group/create": {
             "post": {
                 "security": [

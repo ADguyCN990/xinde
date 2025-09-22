@@ -59,6 +59,12 @@ const (
 	ErrorDeviceIDInvalid = "无效的设备类型ID格式"
 )
 
+// filterImage
+const (
+	ErrorFilterImageNotFound  = "筛选下拉列表图片不存在"
+	ErrorFilterImageIDInvalid = "无效的筛选下拉列表图片ID格式"
+)
+
 // JWT token
 const (
 	ErrorTokenExpired     = "token已过期"
