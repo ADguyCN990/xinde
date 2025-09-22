@@ -1479,6 +1479,59 @@ paths:
       summary: 更换设备类型的名称
       tags:
       - Device
+  /api/v1/admin/filter_image/create:
+    post:
+      consumes:
+      - multipart/form-data
+      description: 为一个设备类型下的某个筛选值上传一张图片。如果该配置已存在，则会覆盖旧的图片。
+      parameters:
+      - description: 关联的设备类型ID
+        in: formData
+        name: device_type_id
+        required: true
+        type: integer
+      - description: 匹配的筛选条件的值
+        in: formData
+        name: filter_value
+        required: true
+        type: string
+      - description: 要上传的图片文件
+        in: formData
+        name: image
+        required: true
+        type: file
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 操作成功
+          schema:
+            $ref: '#/definitions/xinde_pkg_response.Response'
+        "400":
+          description: 请求参数错误
+          schema:
+            $ref: '#/definitions/xinde_pkg_response.Response'
+        "401":
+          description: Token错误
+          schema:
+            $ref: '#/definitions/xinde_pkg_response.Response'
+        "403":
+          description: 没有管理员权限
+          schema:
+            $ref: '#/definitions/xinde_pkg_response.Response'
+        "404":
+          description: 关联的设备类型不存在
+          schema:
+            $ref: '#/definitions/xinde_pkg_response.Response'
+        "500":
+          description: 服务器内部错误
+          schema:
+            $ref: '#/definitions/xinde_pkg_response.Response'
+      security:
+      - ApiKeyAuth: []
+      summary: 创建或替换筛选条件图片
+      tags:
+      - FilterImage
   /api/v1/admin/group/create:
     post:
       consumes:

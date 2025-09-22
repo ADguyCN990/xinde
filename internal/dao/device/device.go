@@ -188,3 +188,39 @@ func (d *Dao) UpdateDeviceType(tx *gorm.DB, id uint, updateData map[string]inter
 	}
 	return nil
 }
+
+func (d *Dao) CheckFilterImageExists(tx *gorm.DB, deviceTypeID uint, filterValue string) (bool, uint, error) {
+	if tx == nil {
+		return false, 0, fmt.Errorf(stderr.ErrorDbNil)
+	}
+	var filterImage *model.FilterImage
+	err := tx.Model(&model.FilterImage{}).Where("device_type_id = ? And filter_value = ?", deviceTypeID, filterValue).First(&filterImage).Error
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return false, 0, nil
+		}
+		return false, 0, fmt.Errorf("判断设备筛选下拉图片是否存在失败: " + err.Error())
+	}
+	return true, filterImage.ID, nil
+}
+
+func (d *Dao) CreateFilterImage(tx *gorm.DB, filterImage *model.FilterImage) error {
+	if tx == nil {
+		return fmt.Errorf(stderr.ErrorDbNil)
+	}
+	if err := tx.Model(&model.FilterImage{}).Create(filterImage).Error; err != nil {
+		return fmt.Errorf("创建设备筛选下拉图片记录失败: " + err.Error())
+	}
+	return nil
+}
+
+func (d *Dao) DeleteFilterImageByID(tx *gorm.DB, id uint) error {
+	if tx == nil {
+		return fmt.Errorf(stderr.ErrorDbNil)
+	}
+	err := tx.Delete(&model.FilterImage{}, "id = ? ", id).Error
+	if err != nil {
+		return fmt.Errorf("删除设备筛选下拉图片失败: " + err.Error())
+	}
+	return nil
+}

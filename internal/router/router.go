@@ -124,6 +124,11 @@ func InitRouter() (*gin.Engine, error) {
 				deviceGroup.POST("/update/image/:id", deviceCtrl.UpdateImage)
 				deviceGroup.DELETE("/delete/:id", deviceCtrl.Delete)
 			}
+
+			filterImageGroup := adminGroup.Group("/filter_image")
+			{
+				filterImageGroup.POST("/create", deviceCtrl.CreateFilterImage)
+			}
 		}
 
 		// ========== 需要认证的接口 ==========
