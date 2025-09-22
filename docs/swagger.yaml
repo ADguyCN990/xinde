@@ -429,6 +429,14 @@ definitions:
     required:
     - price_level
     type: object
+  xinde_internal_dto_device.ChangeDeviceTypeReq:
+    properties:
+      device_type_id:
+        minimum: 1
+        type: integer
+    required:
+    - device_type_id
+    type: object
   xinde_internal_dto_device.ChangeGroupReq:
     properties:
       group_id:
@@ -1512,6 +1520,51 @@ paths:
       security:
       - ApiKeyAuth: []
       summary: 删除筛选条件图片
+      tags:
+      - FilterImage
+  /api/v1/admin/filter_image/change/device_type/{id}:
+    patch:
+      consumes:
+      - application/json
+      description: 将一条筛选条件图片配置移动到另一个设备类型下
+      parameters:
+      - description: 筛选条件图片配置 ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: 请求体
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/xinde_internal_dto_device.ChangeDeviceTypeReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 操作成功
+          schema:
+            $ref: '#/definitions/xinde_pkg_response.Response'
+        "400":
+          description: 请求参数错误
+          schema:
+            $ref: '#/definitions/xinde_pkg_response.Response'
+        "404":
+          description: 配置或目标设备不存在
+          schema:
+            $ref: '#/definitions/xinde_pkg_response.Response'
+        "409":
+          description: 目标设备下已存在相同的筛选值配置 (Conflict)
+          schema:
+            $ref: '#/definitions/xinde_pkg_response.Response'
+        "500":
+          description: 服务器内部错误
+          schema:
+            $ref: '#/definitions/xinde_pkg_response.Response'
+      security:
+      - ApiKeyAuth: []
+      summary: 更改所属设备
       tags:
       - FilterImage
   /api/v1/admin/filter_image/create:

@@ -255,6 +255,14 @@ func (d *Dao) CreateFilterImage(tx *gorm.DB, filterImage *model.FilterImage) err
 	return nil
 }
 
+func (d *Dao) UpdateFilterImage(tx *gorm.DB, id uint, updateData map[string]interface{}) error {
+	err := tx.Model(&model.FilterImage{}).Where("id = ?", id).Updates(updateData).Error
+	if err != nil {
+		return fmt.Errorf("更新设备筛选下拉图片失败: " + err.Error())
+	}
+	return nil
+}
+
 func (d *Dao) DeleteFilterImageByID(tx *gorm.DB, id uint) error {
 	if tx == nil {
 		return fmt.Errorf(stderr.ErrorDbNil)

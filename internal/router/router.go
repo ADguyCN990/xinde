@@ -130,6 +130,7 @@ func InitRouter() (*gin.Engine, error) {
 				filterImageGroup.POST("/create", deviceCtrl.CreateFilterImage)
 				filterImageGroup.GET("/list", deviceCtrl.FilterImageList)
 				filterImageGroup.DELETE("/delete/:id", deviceCtrl.DeleteFilterImage)
+				filterImageGroup.PATCH("/change/device_type/:id", deviceCtrl.ChangeFilterImageDevice)
 			}
 		}
 

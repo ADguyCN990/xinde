@@ -61,8 +61,9 @@ const (
 
 // filterImage
 const (
-	ErrorFilterImageNotFound  = "筛选下拉列表图片不存在"
-	ErrorFilterImageIDInvalid = "无效的筛选下拉列表图片ID格式"
+	ErrorFilterImageNotFound      = "筛选下拉列表图片不存在"
+	ErrorFilterImageIDInvalid     = "无效的筛选下拉列表图片ID格式"
+	ErrorFilterImageValueConflict = "已存在该筛选下拉列表图片的配置，发生冲突"
 )
 
 // JWT token
