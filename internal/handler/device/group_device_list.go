@@ -13,7 +13,8 @@ import (
 // GroupDeviceList handles fetching a list of device types.
 // @Summary      根据分组获取设备类型列表
 // @Description  分页获取设备类型列表，用于前台展示
-// @Tags         group
+// @Tags         Group
+// @Tags         Solution
 // @Accept       json
 // @Produce      json
 // @Param        id   path      int  true  "设备类型 ID"
@@ -22,7 +23,8 @@ import (
 // @Failure      400 {object} response.Response "请求参数错误"
 // @Failure      404 {object} response.Response "分组不存在"
 // @Failure      500 {object} response.Response "服务器内部错误"
-// @Router       /api/v1/admin/group/device/list [get]
+// @Router       /api/v1/admin/group/device/list/{id} [get]
+// @Router       /api/v1/groups/device_types/{id} [get]
 func (ctrl *Controller) GroupDeviceList(c *gin.Context) {
 	groupID, err := common.GetIDFromUrl(c)
 	if err != nil {

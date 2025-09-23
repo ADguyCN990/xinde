@@ -1630,7 +1630,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/api/v1/admin/group/device/list": {
+        "/api/v1/admin/group/device/list/{id}": {
             "get": {
                 "security": [
                     {
@@ -1645,7 +1645,8 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "group"
+                    "Group",
+                    "Solution"
                 ],
                 "summary": "根据分组获取设备类型列表",
                 "parameters": [
@@ -1754,9 +1755,10 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Group"
+                    "Group",
+                    "Solution"
                 ],
-                "summary": "获取树状分组列表",
+                "summary": "获取树状分组列表。用于前台展示分组，和后台需要树状分组的地方。",
                 "parameters": [
                     {
                         "type": "string",
@@ -2092,6 +2094,106 @@ const docTemplate = `{
                         "description": "设备类型不存在",
                         "schema": {
                             "$ref": "#/definitions/xinde_pkg_response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "服务器内部错误",
+                        "schema": {
+                            "$ref": "#/definitions/xinde_pkg_response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/groups/device_types/{id}": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "分页获取设备类型列表，用于前台展示",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Group",
+                    "Solution"
+                ],
+                "summary": "根据分组获取设备类型列表",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "设备类型 ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "成功返回列表",
+                        "schema": {
+                            "$ref": "#/definitions/xinde_internal_dto_device.GroupDeviceListResp"
+                        }
+                    },
+                    "400": {
+                        "description": "请求参数错误",
+                        "schema": {
+                            "$ref": "#/definitions/xinde_pkg_response.Response"
+                        }
+                    },
+                    "404": {
+                        "description": "分组不存在",
+                        "schema": {
+                            "$ref": "#/definitions/xinde_pkg_response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "服务器内部错误",
+                        "schema": {
+                            "$ref": "#/definitions/xinde_pkg_response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/groups/tree": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "获取一个完整的、嵌套的树状分组结构",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Group",
+                    "Solution"
+                ],
+                "summary": "获取树状分组列表。用于前台展示分组，和后台需要树状分组的地方。",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "是否包含图标URL (必填，true或者false)",
+                        "name": "icon",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "成功返回分组树",
+                        "schema": {
+                            "$ref": "#/definitions/xinde_internal_dto_group.TreeResp"
                         }
                     },
                     "500": {

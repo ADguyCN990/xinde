@@ -147,7 +147,14 @@ func InitRouter() (*gin.Engine, error) {
 			{
 				solutionGroup.POST("/query", solutionCtrl.Query)
 			}
+
+			groupGroup := mobGroup.Group("/groups")
+			{
+				groupGroup.GET("/tree", groupCtrl.GetTree)
+				groupGroup.GET("/device_types/:id", deviceCtrl.GroupDeviceList)
+			}
 		}
+
 		// ========== 可选认证接口（有token更好，没有也行）==========
 
 	}

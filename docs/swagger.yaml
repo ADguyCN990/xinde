@@ -1863,7 +1863,7 @@ paths:
       summary: 删除分组
       tags:
       - Group
-  /api/v1/admin/group/device/list:
+  /api/v1/admin/group/device/list/{id}:
     get:
       consumes:
       - application/json
@@ -1897,7 +1897,8 @@ paths:
       - ApiKeyAuth: []
       summary: 根据分组获取设备类型列表
       tags:
-      - group
+      - Group
+      - Solution
   /api/v1/admin/group/list:
     get:
       consumes:
@@ -1956,9 +1957,10 @@ paths:
             $ref: '#/definitions/xinde_pkg_response.Response'
       security:
       - ApiKeyAuth: []
-      summary: 获取树状分组列表
+      summary: 获取树状分组列表。用于前台展示分组，和后台需要树状分组的地方。
       tags:
       - Group
+      - Solution
   /api/v1/admin/group/update/{id}:
     put:
       consumes:
@@ -2166,6 +2168,70 @@ paths:
       summary: 修改设备类型图片
       tags:
       - Device
+  /api/v1/groups/device_types/{id}:
+    get:
+      consumes:
+      - application/json
+      description: 分页获取设备类型列表，用于前台展示
+      parameters:
+      - description: 设备类型 ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 成功返回列表
+          schema:
+            $ref: '#/definitions/xinde_internal_dto_device.GroupDeviceListResp'
+        "400":
+          description: 请求参数错误
+          schema:
+            $ref: '#/definitions/xinde_pkg_response.Response'
+        "404":
+          description: 分组不存在
+          schema:
+            $ref: '#/definitions/xinde_pkg_response.Response'
+        "500":
+          description: 服务器内部错误
+          schema:
+            $ref: '#/definitions/xinde_pkg_response.Response'
+      security:
+      - ApiKeyAuth: []
+      summary: 根据分组获取设备类型列表
+      tags:
+      - Group
+      - Solution
+  /api/v1/groups/tree:
+    get:
+      consumes:
+      - application/json
+      description: 获取一个完整的、嵌套的树状分组结构
+      parameters:
+      - description: 是否包含图标URL (必填，true或者false)
+        in: query
+        name: icon
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 成功返回分组树
+          schema:
+            $ref: '#/definitions/xinde_internal_dto_group.TreeResp'
+        "500":
+          description: 服务器内部错误
+          schema:
+            $ref: '#/definitions/xinde_pkg_response.Response'
+      security:
+      - ApiKeyAuth: []
+      summary: 获取树状分组列表。用于前台展示分组，和后台需要树状分组的地方。
+      tags:
+      - Group
+      - Solution
   /api/v1/solutions/query:
     post:
       consumes:

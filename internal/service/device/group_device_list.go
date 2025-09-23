@@ -28,7 +28,7 @@ func (s *Service) GroupDeviceList(groupID uint) ([]*dto.GroupDeviceListData, err
 
 	// 3. 根据DeviceTypeID往attachment表里获取图片
 	imageMap := make(map[uint]string)
-	deviceIDList := make([]uint, len(deviceTypeList))
+	var deviceIDList []uint
 
 	for _, deviceType := range deviceTypeList {
 		deviceIDList = append(deviceIDList, deviceType.ID)
