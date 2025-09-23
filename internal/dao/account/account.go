@@ -230,3 +230,52 @@ func (d *Dao) Transaction(fn func(*gorm.DB) error) error {
 
 	return nil
 }
+
+// UserPrice is a temporary struct to hold the result of the price query.
+type UserPrice struct {
+	ProductCode string  `gorm:"column:product_code"`
+	Price1      float64 `gorm:"column:price_1"`
+	Price2      float64 `gorm:"column:price_2"`
+	Price3      float64 `gorm:"column:price_3"`
+	Price4      float64 `gorm:"column:price_4"`
+	PriceLevel  string  `gorm:"column:price_level"`
+}
+
+// FindPricesForUser retrieves prices for a list of product codes based on a user's price level.
+func (d *Dao) FindPricesForUser(tx *gorm.DB, uid uint, productCodes []string) ([]*UserPrice, error) {
+	if tx == nil {
+		return nil, fmt.Errorf(stderr.ErrorDbNil)
+	}
+	if len(productCodes) == 0 {
+		return []*UserPrice{}, nil
+	}
+
+	var prices []*UserPrice
+
+	// GORM 无法完美构建 CROSS JOIN，所以我们使用原生 SQL 以确保查询正确
+	sql := `
+        SELECT
+            p.product_code,
+            p.price_1,
+            p.price_2,
+            p.price_3,
+            p.price_4,
+            IFNULL(c.price_level, 'price_1') AS price_level 
+        FROM
+            t_user u
+        LEFT JOIN
+            t_company c ON u.company_id = c.id
+		CROSS JOIN
+            t_price p
+        WHERE
+	    p.product_code IN (?)
+            AND u.uid = ?;
+    `
+
+	err := tx.Raw(sql, productCodes, uid).Scan(&prices).Error
+	if err != nil {
+		return nil, err
+	}
+
+	return prices, nil
+}

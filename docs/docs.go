@@ -2103,6 +2103,75 @@ const docTemplate = `{
                 }
             }
         },
+        "/api/v1/solutions/query": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "根据用户提供的筛选条件，动态查询方案列表，并返回下一步可用的筛选选项。传入空的筛选对象可获取初始状态。",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Solution"
+                ],
+                "summary": "查询/筛选选型方案",
+                "parameters": [
+                    {
+                        "description": "查询请求体",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/xinde_internal_dto_solution.QueryReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "查询成功",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/xinde_pkg_response.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/xinde_internal_dto_solution.QueryResp"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "请求参数错误",
+                        "schema": {
+                            "$ref": "#/definitions/xinde_pkg_response.Response"
+                        }
+                    },
+                    "401": {
+                        "description": "Token错误",
+                        "schema": {
+                            "$ref": "#/definitions/xinde_pkg_response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "服务器内部错误",
+                        "schema": {
+                            "$ref": "#/definitions/xinde_pkg_response.Response"
+                        }
+                    }
+                }
+            }
+        },
         "/ping": {
             "get": {
                 "description": "do ping",
@@ -3094,6 +3163,171 @@ const docTemplate = `{
                 "success": {
                     "type": "boolean",
                     "example": true
+                }
+            }
+        },
+        "xinde_internal_dto_solution.AvailableFilter": {
+            "type": "object",
+            "properties": {
+                "filter_name": {
+                    "type": "string"
+                },
+                "options": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/xinde_internal_dto_solution.FilterOption"
+                    }
+                }
+            }
+        },
+        "xinde_internal_dto_solution.ComponentData": {
+            "type": "object",
+            "properties": {
+                "brand": {
+                    "description": "来自 API",
+                    "type": "string"
+                },
+                "image_url": {
+                    "description": "【新增】来自 API",
+                    "type": "string"
+                },
+                "inventory_gongpin": {
+                    "description": "来自 API (bsonhand)",
+                    "type": "string"
+                },
+                "inventory_xinde": {
+                    "description": "来自 API (onhand)",
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "price": {
+                    "description": "来自 MySQL 价格表",
+                    "type": "number"
+                },
+                "product_code": {
+                    "type": "string"
+                },
+                "spec_code": {
+                    "type": "string"
+                }
+            }
+        },
+        "xinde_internal_dto_solution.DetailsData": {
+            "type": "object",
+            "properties": {
+                "components": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/xinde_internal_dto_solution.ComponentData"
+                    }
+                },
+                "filters": {
+                    "type": "object",
+                    "additionalProperties": true
+                },
+                "parameters": {
+                    "type": "object",
+                    "additionalProperties": true
+                }
+            }
+        },
+        "xinde_internal_dto_solution.FilterOption": {
+            "type": "object",
+            "properties": {
+                "image_url": {
+                    "type": "string"
+                },
+                "value": {}
+            }
+        },
+        "xinde_internal_dto_solution.PaginationReq": {
+            "type": "object",
+            "required": [
+                "page",
+                "page_size"
+            ],
+            "properties": {
+                "page": {
+                    "type": "integer",
+                    "minimum": 1
+                },
+                "page_size": {
+                    "type": "integer",
+                    "maximum": 100,
+                    "minimum": 1
+                }
+            }
+        },
+        "xinde_internal_dto_solution.QueryReq": {
+            "type": "object",
+            "required": [
+                "device_type_id"
+            ],
+            "properties": {
+                "current_filters": {
+                    "type": "object",
+                    "additionalProperties": true
+                },
+                "device_type_id": {
+                    "type": "integer",
+                    "minimum": 1
+                },
+                "pagination": {
+                    "$ref": "#/definitions/xinde_internal_dto_solution.PaginationReq"
+                }
+            }
+        },
+        "xinde_internal_dto_solution.QueryResp": {
+            "type": "object",
+            "properties": {
+                "available_filters": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/xinde_internal_dto_solution.AvailableFilter"
+                    }
+                },
+                "solutions": {
+                    "$ref": "#/definitions/xinde_internal_dto_solution.SolutionsPageData"
+                }
+            }
+        },
+        "xinde_internal_dto_solution.SolutionData": {
+            "type": "object",
+            "properties": {
+                "details": {
+                    "$ref": "#/definitions/xinde_internal_dto_solution.DetailsData"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "xinde_internal_dto_solution.SolutionsPageData": {
+            "type": "object",
+            "properties": {
+                "list": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/xinde_internal_dto_solution.SolutionData"
+                    }
+                },
+                "page": {
+                    "type": "integer"
+                },
+                "pageSize": {
+                    "type": "integer"
+                },
+                "pages": {
+                    "type": "integer"
+                },
+                "total": {
+                    "description": "DAO层返回的是int64，这里保持一致",
+                    "type": "integer"
                 }
             }
         },

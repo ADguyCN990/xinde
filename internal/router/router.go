@@ -13,6 +13,7 @@ import (
 	"xinde/internal/handler/device"
 	"xinde/internal/handler/group"
 	"xinde/internal/handler/price"
+	"xinde/internal/handler/solution"
 	"xinde/internal/middleware/auth"
 )
 
@@ -50,6 +51,10 @@ func InitRouter() (*gin.Engine, error) {
 	deviceCtrl, err := device.NewDeviceController()
 	if err != nil {
 		return nil, fmt.Errorf("初始化DeviceController失败: %w", err)
+	}
+	solutionCtrl, err := solution.NewSolutionController()
+	if err != nil {
+		return nil, fmt.Errorf("初始化SolutionController失败: %w", err)
 	}
 	// API v1 routes
 	apiV1 := router.Group("/api/v1")
@@ -135,7 +140,14 @@ func InitRouter() (*gin.Engine, error) {
 		}
 
 		// ========== 需要认证的接口 ==========
-
+		mobGroup := apiV1.Group("/")
+		mobGroup.Use(auth.JWTAuth())
+		{
+			solutionGroup := mobGroup.Group("/solutions")
+			{
+				solutionGroup.POST("/query", solutionCtrl.Query)
+			}
+		}
 		// ========== 可选认证接口（有token更好，没有也行）==========
 
 	}

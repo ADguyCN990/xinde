@@ -685,6 +685,118 @@ definitions:
         example: true
         type: boolean
     type: object
+  xinde_internal_dto_solution.AvailableFilter:
+    properties:
+      filter_name:
+        type: string
+      options:
+        items:
+          $ref: '#/definitions/xinde_internal_dto_solution.FilterOption'
+        type: array
+    type: object
+  xinde_internal_dto_solution.ComponentData:
+    properties:
+      brand:
+        description: 来自 API
+        type: string
+      image_url:
+        description: 【新增】来自 API
+        type: string
+      inventory_gongpin:
+        description: 来自 API (bsonhand)
+        type: string
+      inventory_xinde:
+        description: 来自 API (onhand)
+        type: string
+      name:
+        type: string
+      price:
+        description: 来自 MySQL 价格表
+        type: number
+      product_code:
+        type: string
+      spec_code:
+        type: string
+    type: object
+  xinde_internal_dto_solution.DetailsData:
+    properties:
+      components:
+        items:
+          $ref: '#/definitions/xinde_internal_dto_solution.ComponentData'
+        type: array
+      filters:
+        additionalProperties: true
+        type: object
+      parameters:
+        additionalProperties: true
+        type: object
+    type: object
+  xinde_internal_dto_solution.FilterOption:
+    properties:
+      image_url:
+        type: string
+      value: {}
+    type: object
+  xinde_internal_dto_solution.PaginationReq:
+    properties:
+      page:
+        minimum: 1
+        type: integer
+      page_size:
+        maximum: 100
+        minimum: 1
+        type: integer
+    required:
+    - page
+    - page_size
+    type: object
+  xinde_internal_dto_solution.QueryReq:
+    properties:
+      current_filters:
+        additionalProperties: true
+        type: object
+      device_type_id:
+        minimum: 1
+        type: integer
+      pagination:
+        $ref: '#/definitions/xinde_internal_dto_solution.PaginationReq'
+    required:
+    - device_type_id
+    type: object
+  xinde_internal_dto_solution.QueryResp:
+    properties:
+      available_filters:
+        items:
+          $ref: '#/definitions/xinde_internal_dto_solution.AvailableFilter'
+        type: array
+      solutions:
+        $ref: '#/definitions/xinde_internal_dto_solution.SolutionsPageData'
+    type: object
+  xinde_internal_dto_solution.SolutionData:
+    properties:
+      details:
+        $ref: '#/definitions/xinde_internal_dto_solution.DetailsData'
+      id:
+        type: integer
+      name:
+        type: string
+    type: object
+  xinde_internal_dto_solution.SolutionsPageData:
+    properties:
+      list:
+        items:
+          $ref: '#/definitions/xinde_internal_dto_solution.SolutionData'
+        type: array
+      page:
+        type: integer
+      pageSize:
+        type: integer
+      pages:
+        type: integer
+      total:
+        description: DAO层返回的是int64，这里保持一致
+        type: integer
+    type: object
   xinde_pkg_response.Response:
     properties:
       code:
@@ -2054,6 +2166,47 @@ paths:
       summary: 修改设备类型图片
       tags:
       - Device
+  /api/v1/solutions/query:
+    post:
+      consumes:
+      - application/json
+      description: 根据用户提供的筛选条件，动态查询方案列表，并返回下一步可用的筛选选项。传入空的筛选对象可获取初始状态。
+      parameters:
+      - description: 查询请求体
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/xinde_internal_dto_solution.QueryReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 查询成功
+          schema:
+            allOf:
+            - $ref: '#/definitions/xinde_pkg_response.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/xinde_internal_dto_solution.QueryResp'
+              type: object
+        "400":
+          description: 请求参数错误
+          schema:
+            $ref: '#/definitions/xinde_pkg_response.Response'
+        "401":
+          description: Token错误
+          schema:
+            $ref: '#/definitions/xinde_pkg_response.Response'
+        "500":
+          description: 服务器内部错误
+          schema:
+            $ref: '#/definitions/xinde_pkg_response.Response'
+      security:
+      - ApiKeyAuth: []
+      summary: 查询/筛选选型方案
+      tags:
+      - Solution
   /ping:
     get:
       consumes:

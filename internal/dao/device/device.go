@@ -216,6 +216,18 @@ func (d *Dao) GetFilterImageByID(tx *gorm.DB, id uint) (*model.FilterImage, erro
 	return filterImage, nil
 }
 
+func (d *Dao) GetFilterImagesByDeviceTypeID(tx *gorm.DB, deviceTypeID uint) ([]*model.FilterImage, error) {
+	if tx == nil {
+		return nil, fmt.Errorf(stderr.ErrorDbNil)
+	}
+	var filterImages []*model.FilterImage
+	err := tx.Model(&model.FilterImage{}).Where("device_type_id = ?", deviceTypeID).Find(&filterImages).Error
+	if err != nil {
+		return nil, fmt.Errorf("根据DeviceTypeID查找设备筛选下拉列表图片失败: " + err.Error())
+	}
+	return filterImages, nil
+}
+
 func (d *Dao) GetFilterImagePage(tx *gorm.DB, page, pageSize int, deviceTypeID uint) ([]*model.FilterImage, error) {
 	if tx == nil {
 		return nil, fmt.Errorf(stderr.ErrorDbNil)
