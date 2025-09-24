@@ -3,7 +3,6 @@ package group
 import (
 	"github.com/gin-gonic/gin"
 	"net/http"
-	dto "xinde/internal/dto/group"
 	"xinde/pkg/logger"
 	"xinde/pkg/response"
 	"xinde/pkg/stderr"
@@ -23,15 +22,17 @@ import (
 // @Router       /api/v1/admin/group/tree [get]
 // @Router       /api/v1/groups/tree [get]
 func (ctrl *Controller) GetTree(c *gin.Context) {
-	var req dto.TreeReq
-	if err := c.ShouldBind(&req); err != nil {
-		response.Error(c, http.StatusBadRequest, response.CodeInvalidParams, "绑定参数错误: "+err.Error())
-		logger.Error("/admin/group/tree 绑定参数错误: " + err.Error())
-		return
-	}
+	//var req dto.TreeReq
+	//if err := c.ShouldBind(&req); err != nil {
+	//	response.Error(c, http.StatusBadRequest, response.CodeInvalidParams, "绑定参数错误: "+err.Error())
+	//	logger.Error("/admin/group/tree 绑定参数错误: " + err.Error())
+	//	return
+	//}
+	includeIcon := "true"
+	includeIcon = c.Query("include_icon")
 
 	// 剩余的工作交由service处理
-	tree, err := ctrl.Service.GetTree(req.Icon)
+	tree, err := ctrl.Service.GetTree(includeIcon)
 	if err != nil {
 		response.Error(c, http.StatusInternalServerError, response.CodeInternalError, stderr.ErrorInternalServerError)
 		logger.Error("/admin/group/tree 获取树状分组列表出错: " + err.Error())

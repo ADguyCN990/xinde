@@ -1,7 +1,9 @@
 package account
 
 import (
+	"errors"
 	"fmt"
+	"gorm.io/gorm"
 	registerDao "xinde/internal/dao/account"
 	dto "xinde/internal/dto/account"
 	"xinde/pkg/jwt"
@@ -46,7 +48,7 @@ func (s *Service) Register(req *dto.RegisterReq) (uint, error) {
 
 	// 检查用户是否存在
 	exists, err := s.dao.IsExistUser(tx, req.Username)
-	if err != nil {
+	if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
 		tx.Rollback()
 		return 0, err
 	}

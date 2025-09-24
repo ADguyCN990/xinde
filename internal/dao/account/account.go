@@ -43,7 +43,7 @@ func (d *Dao) IsExistUser(tx *gorm.DB, name string) (bool, error) {
 
 	var user account.User
 	err := tx.Where("username = ?", name).First(&user).Error
-	if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
+	if err != nil {
 		return false, err
 	}
 	return true, nil
