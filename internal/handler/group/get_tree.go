@@ -29,7 +29,7 @@ func (ctrl *Controller) GetTree(c *gin.Context) {
 	//	return
 	//}
 	includeIcon := "true"
-	includeIcon = c.Query("include_icon")
+	includeIcon = c.Query("icon")
 
 	// 剩余的工作交由service处理
 	tree, err := ctrl.Service.GetTree(includeIcon)

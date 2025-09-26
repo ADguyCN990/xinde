@@ -143,7 +143,7 @@ func (s *Service) aggregateExternalData(userID uint, solutions []*deviceModel.De
 		productCodes = append(productCodes, code)
 	}
 
-	// 2. 批量调用二方 API
+	// 2. 批量调用二方API productCode为key，相关数据为value的map
 	apiDataMap, err := s.callExternalAPI(productCodes)
 	if err != nil {
 		// 如果 API 调用失败，我们可以选择返回错误，或者只记录日志并继续（返回不带API数据的结果）
@@ -151,7 +151,7 @@ func (s *Service) aggregateExternalData(userID uint, solutions []*deviceModel.De
 		return nil, fmt.Errorf("调用二方服务失败: %w", err)
 	}
 
-	// [占位符] 3. 批量查询 MySQL 价格表
+	// 3. 批量查询 MySQL 价格表
 	priceResults, err := s.accountDao.FindPricesForUser(s.accountDao.DB(), userID, productCodes)
 	if err != nil {
 		return nil, fmt.Errorf("查询价格失败: %w", err)
