@@ -10,23 +10,28 @@ import (
 	"sort"
 	"strconv"
 	"strings"
+	"time"
 	"xinde/internal/dao/account"
 	"xinde/internal/dao/attachment"
 	"xinde/internal/dao/device"
+	"xinde/internal/dao/device_access_log"
 	"xinde/internal/dao/solution"
 	deviceDto "xinde/internal/dto/device"
 	dto "xinde/internal/dto/solution"
 	attachmentModel "xinde/internal/model/attachment"
 	deviceModel "xinde/internal/model/device"
+	model "xinde/internal/model/device_access_log"
 	"xinde/pkg/jwt"
+	"xinde/pkg/logger"
 )
 
 type Service struct {
-	dao           *solution.Dao
-	deviceDao     *device.Dao
-	attachmentDao *attachment.Dao
-	j             *jwt.JWTService
-	accountDao    *account.Dao
+	dao                *solution.Dao
+	deviceDao          *device.Dao
+	attachmentDao      *attachment.Dao
+	deviceAccessLogDao *device_access_log.Dao
+	j                  *jwt.JWTService
+	accountDao         *account.Dao
 }
 
 func NewSolutionService() (*Service, error) {
@@ -46,17 +51,52 @@ func NewSolutionService() (*Service, error) {
 	if err != nil {
 		return nil, fmt.Errorf("NewRegisterDao() 创建Dao实例失败: %v", err)
 	}
+	deviceAcessLogDao, err := device_access_log.NewDeviceAccessLogDao()
+	if err != nil {
+		return nil, fmt.Errorf("NewDeviceAccessLogDao() 创建Dao实例失败: %v", err)
+	}
 	j := jwt.NewJWTService()
 	return &Service{
-		dao:           dao,
-		deviceDao:     deviceDao,
-		attachmentDao: attachmentDao,
-		j:             j,
-		accountDao:    accountDao,
+		dao:                dao,
+		deviceDao:          deviceDao,
+		attachmentDao:      attachmentDao,
+		j:                  j,
+		accountDao:         accountDao,
+		deviceAccessLogDao: deviceAcessLogDao,
 	}, nil
 }
 
+func (s *Service) recordAccessLog(userID, deviceTypeID uint) {
+	defer func() {
+		if err := recover(); err != nil {
+			logger.Error(fmt.Sprintf("panic in recordAccessLog"))
+		}
+	}()
+
+	// 根据用户ID查询用户的相关信息
+	user, err := s.accountDao.GetUserByID(s.accountDao.DB(), userID)
+	if err != nil {
+		logger.Warn(fmt.Sprintf("查找不到访问%d设备的user, id为: %d", deviceTypeID, userID))
+		return
+	}
+
+	logRecord := &model.DeviceAccessLog{
+		UserID:       userID,
+		CompanyID:    user.CompanyID,
+		DeviceTypeID: deviceTypeID,
+		AccessedAt:   time.Now(),
+	}
+
+	// 写入数据库
+	if err := s.deviceAccessLogDao.Create(s.deviceAccessLogDao.DB(), logRecord); err != nil {
+		logger.Error(fmt.Sprintf("记录设备访问日志失败: " + err.Error()))
+	}
+}
+
 func (s *Service) Query(userID uint, req *dto.QueryReq) (*dto.QueryResp, error) {
+	// 0. 记录日志
+	go s.recordAccessLog(userID, req.DeviceTypeID)
+
 	// 1. 查询方案列表和总数
 	total, solutions, err := s.dao.QuerySolutions(s.dao.DB(), req)
 	if err != nil {

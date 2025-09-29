@@ -63,6 +63,19 @@ func (d *Dao) IsExistUserByID(tx *gorm.DB, uid uint) (bool, error) {
 	return count > 0, nil
 }
 
+func (d *Dao) GetUserByID(tx *gorm.DB, uid uint) (*account.User, error) {
+	if tx == nil {
+		return nil, fmt.Errorf(stderr.ErrorDbNil)
+	}
+
+	var user *account.User
+	err := tx.Model(&account.User{}).Where("uid = ?", uid).First(&user).Error
+	if err != nil {
+		return nil, fmt.Errorf("根据id查找user失败: " + err.Error())
+	}
+	return user, nil
+}
+
 // GetUserByIDForUpdate 带行级锁，根据ID查找用户
 func (d *Dao) GetUserByIDForUpdate(tx *gorm.DB, uid uint) (*account.User, error) {
 	if tx == nil {
